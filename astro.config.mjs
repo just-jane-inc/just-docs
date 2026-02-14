@@ -23,19 +23,25 @@ export default defineConfig({
     integrations: [
         starlight({
             title: 'Just__Docs',
-            social: [{icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight'}],
+            social: [{icon: 'github', label: 'GitHub', href: 'https://github.com/just-jane-inc/just-docs'}],
             sidebar: [
+                {label: 'Quick Introduction', slug: 'introduction'},
+                {label: 'Giga VIP', slug: 'giga-vip'},
                 {
-                    label: 'Guides',
+                    label: 'B.A.H.M.S.',
                     items: [
-                        // Each item here is one entry in the navigation menu.
-                        {label: 'Example Guide', slug: 'guides/example'},
-                    ],
+                        {label: 'Jill', slug: 'bahms/jill'},
+                        {label: 'Sounds', slug: 'bahms/sounds'},
+                        {label: 'TTS', slug: 'bahms/tts'},
+                        {label: 'Duels', slug: 'bahms/duels'},
+                        {label: 'Slot Machine', slug: 'bahms/slot-machine'},
+                        {label: 'Bounce House', slug: 'bahms/bounce-house'},
+                        {label: 'Juniper (tamagotchi)', slug: 'bahms/juniper'},
+                        {label: 'Credits', slug: 'bahms/credits'},
+                    ]
                 },
-                {
-                    label: 'Reference',
-                    autogenerate: {directory: 'reference'},
-                },
+                {label: 'Commands', slug: 'commands'},
+                {label: 'Redeems', slug: 'redeems'},
             ],
         }),
     ],
