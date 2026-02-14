@@ -22,7 +22,7 @@ export default defineConfig({
     },
     integrations: [
         starlight({
-            title: 'Just__Docs',
+            title: 'just__docs',
             social: [{icon: 'github', label: 'GitHub', href: 'https://github.com/just-jane-inc/just-docs'}],
             sidebar: [
                 {label: 'Quick Introduction', slug: 'introduction'},
