@@ -24,8 +24,8 @@ To shoot, type either `!bang`, `bang bang` or `!!`.
 **Be mindful of stream delay.** Typically, Twitch streams can be delayed from 1 second up to 6 seconds or more.
 Try and estimate your delay and account for it to have a better chance at winning.
 
-**If you shoot too early**, you will be on cooldown for 3 seconds. 
-Shooting within those 3 seconds resets the 3-second timer. 
+**If you shoot too early**, you will be on cooldown for 3 seconds.
+Shooting within those 3 seconds resets the 3-second timer.
 You can see if you shot early by looking at your orb on screen. If you bounces up and down, you had missed a shot.
 
 After the duel has been won, the timer will display the time it took for the winner to fire their shot, after the music ended.
