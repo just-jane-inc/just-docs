@@ -4,7 +4,8 @@ Documentation for all projects under the B.A.H.M.S. organization. Published on h
 
 # Local development
 
-To run a local development server, either run it locally, or through Docker compose.
+To run a local development server, either run it locally with Node.js, or through
+Docker compose.
 
 ## Node.js
 
@@ -32,13 +33,16 @@ This will expose the Astro server on `http://localhost:4321/`
 
 ## Docker Compose
 
-In order to use the local development server through Docker Compose, one needs to run the following command:
+In order to use the local development server through Docker Compose, one needs to
+run the following command:
 
 ```bash
 docker compose up -d
 ```
 
-The `-d` flag runs in detached mode. Without `-d` it will attach to the current console, binding both input and output and making the process terminate if you close your terminal. The difference is a matter of preference.
+The `-d` flag runs in detached mode. Without `-d` it will attach to the current
+console, binding both input and output and making the process terminate if you
+close your terminal. The difference is a matter of preference.
 
 This will do the following, in order:
 
