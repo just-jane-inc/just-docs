@@ -1,0 +1,57 @@
+services:
+  # Helper service to run NPM commands and install dependencies.
+  npm:
+    image: node:22-alpine
+
+    # Directly invoking this service is meant to function as a stand-alone
+    #   command, so if it fails, do not automatically retry the command.
+    restart: no
+
+    # Configures correct permissions equal to the current user.
+    # This is important to make sure things like `node_modules/` aren't owned by
+    #   the root user of the host OS.
+    user: node
+    working_dir: /home/node/app
+    volumes:
+      - .:/home/node/app
+
+    # Make sure the npm executable is the entrypoint.
+    entrypoint: npm
+
+    # Run the clean install when invoked without additional arguments.
+    command: ci
+
+    # Limit the resources the service is allowed to consume.
+    deploy:
+      resources:
+        limits:
+          # It seems to consume as much memory as you'll allow it.
+          # This seems a sane amount for development purposes. Cache misses
+          #   during development aren't bad and the performance seems good.
+          memory: 128M
+
+  # Main application service, running the Astro dev server.
+  app:
+    # Inherit from the `npm` service.
+    extends:
+      service: npm
+
+    # Whenever the Astro server crashes, start it again, unless we manually stop
+    #   the application.
+    restart: unless-stopped
+
+    # Expose the default Astro port to the host network.
+    ports:
+      - '4321:4321/tcp'
+
+    # Run the dev server.
+    command:
+      - run
+      # The `dev:host` command is equal to `dev` with `--host` to attach it to
+      #   the internal Docker network, so it can be visited from the host OS.
+      - dev:host
+
+    # Ensure that all node modules are installed before starting the server.
+    depends_on:
+      npm:
+        condition: service_completed_successfully
