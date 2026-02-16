@@ -24,7 +24,8 @@ single time purchase of a title that is used to unlock other commands or feature
 |silver-slurper|50|use slurp sounds|
 |ara-ara-mommy|50|use ara-ara sounds|
 |uwu-people|50|use uwu sounds|
-|ermily|50|use erm commnad|
+|ermily|50|use erm sound|
+|heckler|75|use boo/heckle sound|
 |dominatrix|100|use !whip command|
 |doggirl-trainer|250|...!click|
 
