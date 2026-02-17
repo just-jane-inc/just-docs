@@ -28,7 +28,8 @@ services:
           # It seems to consume as much memory as you'll allow it.
           # This seems a sane amount for development purposes. Cache misses
           #   during development aren't bad and the performance seems good.
-          memory: 128M
+          # The memory limit also accounts for requirements to run the build script.
+          memory: 256M
 
   # Main application service, running the Astro dev server.
   app:
