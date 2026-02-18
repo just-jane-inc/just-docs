@@ -36,7 +36,7 @@ export default defineConfig({
                         {label: 'Duels', slug: 'bahms/duels'},
                         {label: 'Slot Machine', slug: 'bahms/slot-machine'},
                         {label: 'Bounce House', slug: 'bahms/bounce-house'},
-                        {label: 'Juniper (tamagotchi)', slug: 'bahms/juniper'},
+                        {label: 'Juniper', slug: 'bahms/juniper'},
                         {label: 'Credits', slug: 'bahms/credits'},
                     ]
                 },
