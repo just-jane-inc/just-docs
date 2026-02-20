@@ -21,14 +21,14 @@ You too, can join the fun by simply chatting.
 Each time you chat your profile picture grows in size.
 The profile picture will then continue to bounce around until it gets killed.
 
-#### Commands
+### Commands
 
-| command       | cost | description                                    |
-|---------------|------|------------------------------------------------|
-| !vroom        | 1    | Gives you more speed. Persists between deaths. |
-| !gigantify-me | 1    | Drastically grows your orb.                    |
-| !vanish       | 0    | Remove yourself from the bounce house.         |
-| !spin         | 0    | Spins your orb around.                         |
+| command         | cost | description                                    |
+|-----------------|------|------------------------------------------------|
+| `!vroom`        | 1    | Gives you more speed. Persists between deaths. |
+| `!gigantify-me` | 1    | Drastically grows your orb.                    |
+| `!vanish`       | 0    | Remove yourself from the bounce house.         |
+| `!spin`         | 0    | Spins your orb around.                         |
 
 ## Emotes
 
@@ -45,8 +45,22 @@ Messages are put in a queue and each message is guaranteed to be in the bounce h
 If new a message is added when the slots are full, it will be added to a queue and oldest message will be removed when their time expires.
 Otherwise, messages stay indefinitely if the queue is empty.
 
-#### Commands
+### Commands
 
 | command           | cost | description                            |
 |-------------------|------|----------------------------------------|
-| !whatever \<msg\> | 1    | Adds your message to the bounce house. |
+| `!whatever <msg>` | 1    | Adds your message to the bounce house. |
+
+
+## Colors
+
+Both the border of the [orbs](#profile-pictures) and foreground of [messages](#messages) use a unique color that is distinct to you, the user.
+
+### Commands
+
+| command              | cost | description                             |
+|----------------------|------|-----------------------------------------|
+| `!my-color`          | 0    | Gets your configured color.             |
+| `!set-color <#hex6>` | 0    | Attempts to set your unique user color. |
+
+> Colors **MUST** be unique for each user. 

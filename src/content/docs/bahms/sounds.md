@@ -47,23 +47,15 @@ These are sounds that needs to be unlocked by paying a fee.
 Currently, this is a one-time payment of [Giga VIP](/giga-vip), and you get to use the sound in perpetuity,
 but this **might change in the future** depending on sounds use.
 
-| sound   | cost | unlock command   |
-|---------|------|------------------|
-| rain    | 25   | !rain-maker      |
-| thunder | 50   | !thunder-god     |
-| slurp   | 50   | !silver-slurper  |
-| ara ara | 50   | !ara-ara-mommy   |
-| uwu     | 50   | !uwu-people      |
-| erm     | 50   | !ermily          |
-| whip    | 100  | !dominatrix      |
-| click   | 250  | !doggirl-trainer |
+| sound    | cost | unlock command     |
+|----------|------|--------------------|
+| rain     | 25   | `!rain-maker`      |
+| thunder  | 50   | `!thunder-god`     |
+| slurp    | 50   | `!silver-slurper`  |
+| ara ara  | 50   | `!ara-ara-mommy`   |
+| uwu      | 50   | `!uwu-people`      |
+| erm      | 50   | `!ermily`          |
+| `!whip`  | 100  | `!dominatrix`      |
+| `!click` | 250  | `!doggirl-trainer` |
 
-
-
-
-
-
-
-
-
-
+Use the `!my-titles` commands to get a list of the sounds you have unlocked.
