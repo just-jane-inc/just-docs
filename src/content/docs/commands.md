@@ -5,6 +5,7 @@ description: Introduction to commands
 
 commands are prefixed with either `!` or `bang `.
 the `--help` flag can be used to get additional information about commands.
+
 examples:
 
 ```
@@ -12,6 +13,11 @@ examples:
 [just__jillian]: bang duel # use the duel command
 [Captain_Onosa]: !ermily --help # gets help docs for the ermily command
 ```
+
+some commands accept arguments:
+
+- `[optional]` arguments surrounded by `[]` square brackets are optional
+- `<required>` arguments surrounded by `<>` angle brackets are required
 
 ## titles
 single time purchase of a title that is used to unlock other commands or features.
@@ -48,21 +54,21 @@ commands that may be informative to you. who knows?
 | `!commands` |      0       | gets a link to this page                                         |
 
 ## giga-vip
-what are [giga-vip](/giga-vip/)? great question
+what are [giga-vip](/giga-vip/) levels? great question
 
-| command                                | cost | description                                         |
-|:---------------------------------------|:----:|:----------------------------------------------------|
-| `!giga-vip`                            |  0   | gets your, or another users, current giga-vip level |
-| `!mega-vip`                            |  0   | gets your, or another users, current mega-vip level |
-| `!gifta-vip <@twitch_user> <giga-vip>` |  0   | transfer your giga-vip to another user              |
+| command                       | cost | description                                         |
+|:------------------------------|:----:|:----------------------------------------------------|
+| `!giga-vip [@user]`           |  0   | gets your, or another users, current giga-vip level |
+| `!mega-vip [@user]`           |  0   | gets your, or another users, current mega-vip level |
+| `!gifta-vip <@user> <amount>` |  0   | transfer your giga-vip to another user              |
 
 ## jill
 our lovely [AI co-star, Jill](/bahms/jill/)
 
-| command                       | cost | description                                                 |
-|:------------------------------|:----:|:------------------------------------------------------------|
-| `!jill <msg>`                 |  2   | send a message to Jill, she will always respond             |
-| `!remind-me <duration> [msg]` |  0   | ask Jill to help you remember something. what was it again? |
+| command                       | cost | description                                     |
+|:------------------------------|:----:|:------------------------------------------------|
+| `!jill <msg>`                 |  2   | send a message to Jill, she will always respond |
+| `!remind-me <duration> [msg]` |  0   | ask Jill to help you remember... huh            |
 
 Jill loves to learn about you by [whispering](/bahms/jill/#whispering) commands.
 
@@ -71,7 +77,7 @@ join the voices in my head
 
 | command             |     cost     | description                                  |
 |:--------------------|:------------:|:---------------------------------------------|
-| `!tts <msg>`        | market value | use tts                                      |
+| `!tts <msg>`        | market value | use [tts](/bahms/tts/)                       |
 | `!tts-price`        |      0       | prints the current market-value price of tts |
 | `!my-voice <voice>` |      0       | sets your default tts voice                  |
 
