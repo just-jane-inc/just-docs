@@ -11,8 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Install node_modules/
-        run: docker compose run --rm npm ci
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
 
-      - name: Build documentation
-        run: docker compose run --rm npm build
+      - run: npm ci
+      - run: npm run build
