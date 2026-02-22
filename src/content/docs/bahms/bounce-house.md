@@ -23,12 +23,12 @@ The profile picture will then continue to bounce around until it gets killed.
 
 ### Commands
 
-| command         | cost | description                                    |
-|-----------------|------|------------------------------------------------|
-| `!vroom`        | 1    | Gives you more speed. Persists between deaths. |
-| `!gigantify-me` | 1    | Drastically grows your orb.                    |
-| `!vanish`       | 0    | Remove yourself from the bounce house.         |
-| `!spin`         | 0    | Spins your orb around.                         |
+| command         | cost ([gv](/giga-vip/)) | description                                    |
+|-----------------|:-----------------------:|------------------------------------------------|
+| `!vroom`        |            1            | Gives you more speed. Persists between deaths. |
+| `!gigantify-me` |            1            | Drastically grows your orb.                    |
+| `!vanish`       |            0            | Remove yourself from the bounce house.         |
+| `!spin`         |            0            | Spins your orb around.                         |
 
 ## Emotes
 
@@ -47,9 +47,9 @@ Otherwise, messages stay indefinitely if the queue is empty.
 
 ### Commands
 
-| command           | cost | description                            |
-|-------------------|------|----------------------------------------|
-| `!whatever <msg>` | 1    | Adds your message to the bounce house. |
+| command           | cost ([gv](/giga-vip/)) | description                            |
+|-------------------|:-----------------------:|----------------------------------------|
+| `!whatever <msg>` |            1            | Adds your message to the bounce house. |
 
 
 ## Colors
@@ -58,9 +58,9 @@ Both the border of the [orbs](#profile-pictures) and foreground of [messages](#m
 
 ### Commands
 
-| command              | cost | description                             |
-|----------------------|------|-----------------------------------------|
-| `!my-color`          | 0    | Gets your configured color.             |
-| `!set-color <#hex6>` | 0    | Attempts to set your unique user color. |
+| command              | cost ([gv](/giga-vip/)) | description                             |
+|----------------------|:-----------------------:|-----------------------------------------|
+| `!my-color`          |            0            | Gets your configured color.             |
+| `!set-color <#hex6>` |            0            | Attempts to set your unique user color. |
 
 > Colors **MUST** be unique for each user. 
