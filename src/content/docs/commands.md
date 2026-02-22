@@ -65,10 +65,10 @@ what are [giga-vip](/giga-vip/) levels? great question
 ## jill
 our lovely [AI co-star, Jill](/bahms/jill/)
 
-| command                       | cost ([gv](/giga-vip/)) | description                                              |
-|:------------------------------|:-----------------------:|:---------------------------------------------------------|
-| `!jill <msg>`                 |            2            | send a message to Jill, she will always respond          |
-| `!remind-me <duration> [msg]` |            0            | reminds you after the given duration (e.g.: `1h20m32s`). |
+| command                       | cost ([gv](/giga-vip/)) | description                                     |
+|:------------------------------|:-----------------------:|:------------------------------------------------|
+| `!jill <msg>`                 |            2            | send a message to Jill, she will always respond |
+| `!remind-me <duration> [msg]` |            0            | reminds after duration (e.g.: `1h20m32s`).      |
 
 Jill loves to learn about you by [whispering](/bahms/jill/#whispering) commands.
 

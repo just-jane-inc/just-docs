@@ -32,7 +32,7 @@ you can inform Jill about yourself.
 
 You can interact with Jill both via the [hey jill redeem](/redeems) or using the `!jill` command:
 
-| command                       | cost ([gv](/giga-vip/)) | description                                              |
-|:------------------------------|:-----------------------:|:---------------------------------------------------------|
-| `!jill <msg>`                 |            2            | Talk to jill.                                            |
-| `!remind-me <duration> [msg]` |            0            | Reminds you after the given duration (e.g.: `1h20m32s`). |
+| command                       | cost ([gv](/giga-vip/)) | description                                |
+|:------------------------------|:-----------------------:|:-------------------------------------------|
+| `!jill <msg>`                 |            2            | Talk to jill.                              |
+| `!remind-me <duration> [msg]` |            0            | Reminds after duration (e.g.: `1h20m32s`). |
