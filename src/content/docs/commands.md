@@ -96,9 +96,14 @@ chat has fun in the [bounce house](/bahms/bounce-house/) while I ignore them
 ## friends
 no eye contact required
 
-| command | cost ([gv](/giga-vip/)) | description                                                                          |
-|:--------|:-----------------------:|:-------------------------------------------------------------------------------------|
-| `!joel` |            0            | just__streambot sends Joel to [JakeCreatesStuff](https://twitch.tv/jakecreatesstuff) |
+| command | cost ([gv](/giga-vip/)) | description                                                                        |
+|:--------|:-----------------------:|:-----------------------------------------------------------------------------------|
+| `!joel` |            0            | just__jillian sends Joel to [JakeCreatesStuff](https://twitch.tv/jakecreatesstuff) |
+
+By typing `!joel` in chat we show our appreciation to [JakeCreatesStuff](https://twitch.tv/jakecreatesstuff) by
+making [his animatronic Joel come to life and spin, spin, spin](https://youtu.be/ow0ZmbZOFmQ).
+
+![Joel](https://cdn.7tv.app/emote/01FGFAVXTG00021TQRJX35MSBM/1x.gif)
 
 ## bang
 let there be justice
