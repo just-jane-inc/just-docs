@@ -33,7 +33,7 @@ single time purchase of a title that is used to unlock other commands or feature
 | `!ermily`          |           50            | use erm [sounds](/bahms/sounds/#paid-sounds)        |
 | `!heckler`         |           75            | use boo/heckle [sounds](/bahms/sounds/#paid-sounds) |
 | `!dominatrix`      |           100           | use [`!whip`](/bahms/sounds/#paid-sounds) command   |
-| `!doggirl-trainer` |           250           | ...[`!click`](/bahms/sounds/#paid-sounds)           |
+| `!doggirl-trainer` |           250           | probably does nothing                               |
 
 ## info
 commands that may be informative to you. who knows?

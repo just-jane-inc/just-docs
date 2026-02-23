@@ -56,6 +56,5 @@ but this **might change in the future** depending on sounds use.
 | uwu      |           50            | `!uwu-people`      |
 | erm      |           50            | `!ermily`          |
 | `!whip`  |           100           | `!dominatrix`      |
-| `!click` |           250           | `!doggirl-trainer` |
 
 Use the `!my-titles` commands to get a list of the sounds you have unlocked.
