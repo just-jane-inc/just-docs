@@ -65,10 +65,9 @@ what are [giga-vip](/giga-vip/) levels? great question
 ## jill
 our lovely [AI co-star, Jill](/bahms/jill/)
 
-| command                       | cost ([gv](/giga-vip/)) | description                                     |
-|:------------------------------|:-----------------------:|:------------------------------------------------|
-| `!jill <msg>`                 |            2            | send a message to Jill, she will always respond |
-| `!remind-me <duration> [msg]` |            0            | reminds after duration (e.g.: `1h20m32s`).      |
+| command       | cost ([gv](/giga-vip/)) | description                                     |
+|:--------------|:-----------------------:|:------------------------------------------------|
+| `!jill <msg>` |            2            | send a message to Jill, she will always respond |
 
 Jill loves to learn about you by [whispering](/bahms/jill/#whispering) commands.
 
@@ -119,6 +118,30 @@ the spice of life
 | `!roll`                           |            0            | roll dice using standard notation (6d9)         |
 | `!choose <option>[, <option>...]` |            0            | randomly select from a list of provided options |
 | `!coin`                           |            0            | flips a fair coin                               |
+
+## reminder
+[thighs](/giga-vip/#thighs) 😍 … I mean, what was I doing?
+
+| command                       | cost ([gv](/giga-vip/)) | description                                |
+|:------------------------------|:-----------------------:|:-------------------------------------------|
+| `!remind-me <duration> [msg]` |            0            | reminds after duration (e.g.: `1h20m32s`). |
+
+Valid time units are:
+
+|       Unit | Time multiplier |
+|-----------:|:----------------|
+|        `d` | n days          |
+|        `h` | n hours         |
+|        `m` | n minutes       |
+|        `s` | n seconds       |
+|       `ms` | n milliseconds  |
+| `us`, `µs` | n microseconds  |
+|       `ns` | n nanoseconds   |
+
+```
+[Red_Epicness]: !remind-me 15m Pizza time
+[MotaanVT]: !remind-me 2m12s Jane is cute mhm pass it on
+```
 
 ## secret squirrel
 this line marks the end of this page
