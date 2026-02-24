@@ -22,16 +22,16 @@ you can inform Jill about yourself.
 
 **These must be [whispered](https://help.twitch.tv/s/article/how-to-use-whispers) to jill.**
 
-| command          | description                                       |
-|------------------|---------------------------------------------------|
-| !call-me <info>  | Choose your preferred name for Jill to use        |
-| !about-me <info> | Tell Jill about yourself                          |
-| !forget-me       | Removes all info you shared, both name and about. |
+| command            | description                                       |
+|--------------------|---------------------------------------------------|
+| `!call-me <info>`  | Choose your preferred name for Jill to use        |
+| `!about-me <info>` | Tell Jill about yourself                          |
+| `!forget-me`       | Removes all info you shared, both name and about. |
 
 ## Commands & Redeems
 
 You can interact with Jill both via the [hey jill redeem](/redeems) or using the `!jill` command:
 
-| command     | cost | description   |
-|-------------|------|---------------|
-| !jill <msg> | 2    | Talk to jill. |
+| command       | cost ([gv](/giga-vip/)) | description   |
+|:--------------|:-----------------------:|:--------------|
+| `!jill <msg>` |            2            | Talk to jill. |
