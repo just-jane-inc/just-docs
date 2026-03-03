@@ -30,7 +30,9 @@ you can inform Jill about yourself.
 
 ## Commands & Redeems
 
-You can interact with Jill both via the [hey jill redeem](/redeems) or using the `!jill` command:
+You can interact with Jill both via the
+[hey jill redeem](/redeems/#just-say-hey-jill)
+or using the `!jill` command:
 
 | command       | cost ([gv](/giga-vip/)) | description   |
 |:--------------|:-----------------------:|:--------------|

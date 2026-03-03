@@ -23,7 +23,9 @@ Mega VIP is often shortened as `mv`.
 
 ### Clock-ins
 
-Clocking in using the clock-in redeem will give you `floor(log2(<clock-ins>))` Giga VIP.
+Clocking in using the [clock-in redeem](/redeems/#just-clock-in) will give you 
+[`floor(log2(<clock-ins>))`](https://www.wolframalpha.com/input?i=floor%28log2%28n%29%29+for+1+to+127)
+Giga VIP.
 In simpler terms, you get Giga VIP in the amount of the largest power of two, smaller or equal than your number of clock-ins.
 
 #### Example table
@@ -41,13 +43,13 @@ In simpler terms, you get Giga VIP in the amount of the largest power of two, sm
 
 ### Pyramid Scheme
 
-The [pyramid scheme redeem](/redeems) gives out Giga VIP to its redeemers.
+The [pyramid scheme redeem](/redeems/#just-pyramid-scheme) gives out Giga VIP to its redeemers.
 Conditions apply, more information on [the redeem page](/redeems).
 
 ### Slot Machine
 
 The [slot machine](/bahms/slot-machine) includes Giga VIP as a reward.
-Conditions apply, more information on [the slot machine page](/redeems).
+Conditions apply, more information on [the slot machine page](/bahms/slot-machine/).
 
 ### Duels
 
@@ -79,4 +81,3 @@ Chatting for the first time gives you 5 Giga VIP.
 | `!mega-vip`                  | Check your own Mega VIP balance.                 |
 | `!mega-vip <user>`           | Check `<user>`'s Mega VIP balance.               |
 | `!gifta-vip <user> <amount>` | Gift `<user>` some Giga VIP. Supports fractions. |
-

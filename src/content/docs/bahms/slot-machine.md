@@ -5,7 +5,7 @@ description: Introduction to gamba
 
 Are you a gambling addict? You should probably get help. Call `1-800-GAMBLER`.
 
-The slot machine is a fun little game, tied to the [gamble redeem](/redeems).
+The slot machine is a fun little game, tied to the [gamble redeem](/redeems/#just-gamba).
 
 There are various prizes available, enumerated in the table below.
 

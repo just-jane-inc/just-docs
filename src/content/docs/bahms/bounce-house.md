@@ -10,6 +10,7 @@ In the bounce house you can find:
 - profile picture orbs
 - emotes
 - various messages
+- things that go [zshoom](/redeems/#just-zshoom) and pew pew pew
 
 Profile pictures and emotes live in the same space and bounce off of each other, damaging each others in the process.
 When an orb/emote is hit by another, it shrinks and when small enough it eventually disappears.
@@ -63,4 +64,11 @@ Both the border of the [orbs](#profile-pictures) and foreground of [messages](#m
 | `!my-color`          |            0            | Gets your configured color.             |
 | `!set-color <#hex6>` |            0            | Attempts to set your unique user color. |
 
-> Colors **MUST** be unique for each user. 
+> Colors **MUST** be unique for each user.
+
+## Ships
+
+From time to time you can see a ship enter the bounce house. Those are flown by
+chat and help thin out the chaos in the bounce house.
+
+Want to play along? See the [Just Zshoom redeem](/redeems/#just-zshoom).
