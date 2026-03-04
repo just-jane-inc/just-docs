@@ -83,7 +83,7 @@ docker compose logs -f -n 30 app
 # Extract Twitch Redeems
 
 To get a list of available redeems and their configuration, run the following
-command in the console on a page with Twitch chat open.
+snippet in the console on a page with Twitch chat open.
 
 ```javascript
 const redeems = [];
