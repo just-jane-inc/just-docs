@@ -250,7 +250,8 @@ redeem is missed.
 
 ### Just Spoken for Me
 
-It is Jane, thé Jane, transforming _your_ text to Jane speech.
+Jane will turn _your_ text to speech. No thoughts, head empty. Jane will be your
+TTS and speak what you wrote in the redeem message.
 
 ### Just Draw Me Like One of Your Cat Girls
 
