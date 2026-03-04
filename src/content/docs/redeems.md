@@ -245,6 +245,9 @@ She'll interact with chat. She's trying.
 Make Jane switch between her different models. From professional lab coat to 
 comfy axolotl and from sly fox to friendly dog girl. She wears them so well.
 
+Model switching is done manually, so be sure to let Jane or a mod know if the
+redeem is missed.
+
 ### Just Spoken for Me
 
 It is Jane, thé Jane, transforming _your_ text to Jane speech.
