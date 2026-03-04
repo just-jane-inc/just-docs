@@ -258,7 +258,13 @@ TTS and speak what you wrote in the redeem message.
 Jane will do your pixel art commission. She will put at least 20 minutes into it.
 Maybe on stream, maybe not. 
 
+Commissions are limited to just a few per stream, and Jane will choose an
+opportune moment to bundle them into an art segment.
+
 She might refund if she doesn't feel like doing art. <3
+
+> **N.B.** Jane sometimes pauses the redeem for a length of time, to recharge
+>   her creativity.
 
 ## Interact with Jill
 
