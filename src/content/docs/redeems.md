@@ -161,13 +161,13 @@ regex:{expression} color:#RRGGBB
 | Option               | Description                                                                                                                                                    |
 |:---------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `regex:{expression}` | Provide for `expression` a valid [regular expression](https://docs.python.org/3/library/re.html#regular-expression-syntax) between the `{` and `}` delimiters. |
-| `color:#RRGGBB`      | Provide an [RGB hexadecimal color notation](https://drafts.csswg.org/css-color/#hex-notation) between `#000000` and `#ffffff`.                                 |
+| `color:#RRGGBB`      | Provide an [RGB hexadecimal color notation](https://drafts.csswg.org/css-color/#hex-notation) between `#000000` and `#FFFFFF`.                                 |
 
 As an example, the [following expression](https://regex101.com/r/JMdZQk/1) makes
 all mentions of `Red Epicness` turn his signature brownish red color.
 
 ```
-regex:{Red.Epicness} color:#660000
+regex:{Red.Epicness} color:#FF4400
 ```
 
 * https://docs.python.org/3/library/re.html#regular-expression-syntax
