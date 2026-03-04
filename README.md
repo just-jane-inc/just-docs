@@ -79,3 +79,30 @@ Or use `-f` to follow the logs:
 ```bash
 docker compose logs -f -n 30 app
 ```
+
+# Extract Twitch Redeems
+
+To get a list of available redeems and their configuration, run the following
+command in the console on a page with Twitch chat open.
+
+```javascript
+const redeems = [];
+
+for (const reward of document.querySelectorAll('.rewards-list>div')) {
+    const icon = reward.querySelector('.reward-icon');
+    
+    if (!icon) {
+        continue;
+    }
+    
+    const iconBackgroundColor = icon.style.backgroundColor;
+    const iconUrl = icon.querySelector('img').src;
+    const title = reward.querySelector('p[title]').innerText;
+    const channelPoints = reward.querySelector('.reward-icon__cost p').innerText;
+    redeems.push({title, channelPoints, iconBackgroundColor, iconUrl});
+}
+
+console.log({redeems});
+```
+
+This list can be used to update `src/content/redeems.ts`.

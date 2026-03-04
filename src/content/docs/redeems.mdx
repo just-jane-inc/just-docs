@@ -2,39 +2,18 @@
 title: Redeems
 description: Introduction to redeems
 ---
+import {CardGrid} from "@astrojs/starlight/components";
+import RedeemCard from '../components/RedeemCard.astro';
+import {redeems} from "../redeems.ts";
 
 Enjoy the crazy stimmies Jane made, to distract her and keep yourselves
 entertained while she builds even more. Cwazy.
 
-## Channel points
-
 Chat redeems can be paid by using
 [channel points](https://help.twitch.tv/s/article/channel-points-faq#viewer).
-Here is a list of all the redeems and their cost in channel points.
+Here is an overview of all the redeems and their cost in channel points.
 
-| Redeem                                                                              |  Channel points |
-|:------------------------------------------------------------------------------------|----------------:|
-| [Just Pyramid Scheme](#just-pyramid-scheme)                                         | 2<sup>n−1</sup> |
-| [Just Zshoom](#just-zshoom)                                                         |               1 |
-| [Just Clock In](#just-clock-in)                                                     |               1 |
-| [Just Juniper Pats](#just-juniper-pats)                                             |               1 |
-| [Just Gamba](#just-gamba)                                                           |              64 |
-| [Just Hydrate](#just-hydrate)                                                       |              64 |
-| [Just Write a Comment](#just-write-a-comment)                                       |              64 |
-| [Just Stretch](#just-stretch)                                                       |             128 |
-| [Just Link](#just-link)                                                             |             128 |
-| [Just Word Cloud](#just-word-cloud)                                                 |             128 |
-| [Just Commit](#just-commit)                                                         |             128 |
-| [Just Suggestions](#just-suggestions)                                               |             128 |
-| [Just Say Hey Jill](#just-say-hey-jill)                                             |             512 |
-| [Just Pay Attention to Me](#just-pay-attention-to-me)                               |             512 |
-| [Just Stay Positive](#just-stay-positive)                                           |           1,024 |
-| [Just Switch Model](#just-switch-model)                                             |           2,048 |
-| [Just Spoken for Me](#just-spoken-for-me)                                           |           4,096 |
-| [Just Draw Me Like One of Your Cat Girls](#just-draw-me-like-one-of-your-cat-girls) |           4,096 |
-| [Just Let Me Speak](#just-let-me-speak)                                             |          32,768 |
-| [Just Sleep](#just-sleep)                                                           |         131,072 |
-| [Just Unit Test](#just-unit-test)                                                   |         131,072 |
+<CardGrid>{redeems.map((redeem) => <RedeemCard {...redeem} />)}</CardGrid>
 
 ## On the clock
 
@@ -261,7 +240,7 @@ Maybe on stream, maybe not.
 Commissions are limited to just a few per stream, and Jane will choose an
 opportune moment to bundle them into an art segment.
 
-She might refund if she doesn't feel like doing art. <3
+She might refund if she doesn't feel like doing art. &lt;3
 
 > **N.B.** Jane sometimes pauses the redeem for a length of time, to recharge
 >   her creativity.
