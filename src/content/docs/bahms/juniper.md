@@ -5,8 +5,8 @@ description: Introduction to Juniper
 
 Juniper is a cute tamagotchi-like hedgehog.
 
-Currently, she can be [patted](/redeems/#just-juniper-pats), fed and
-[hydrated](/redeems/#just-hydrate), with future plans for deeper integrations
+Currently, she can be [patted](/redeems/#just-juniper-pats) and
+[fed](/redeems/#just-hydrate), with future plans for deeper integrations
 with our [redeems](/redeems).
 
 She is in active development and her code is available
