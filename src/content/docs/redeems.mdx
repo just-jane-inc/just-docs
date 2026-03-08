@@ -1,3 +1,5 @@
+import ShipFrame from '../components/ShipFrame.astro';
+
 ---
 title: Redeems
 description: Introduction to redeems
@@ -117,13 +119,15 @@ see your score for that round in chat.
 
 There are seven frames. Each frame is 80 x 45, resulting in a single 560 x 45 spritesheet.
 
-1. The first frame is the ship in its idle form.
-1. The second frame is the forward thursters.
-1. The third frame is boost.
-1. The fourth frame is reverse.
-1. The fifth frame is boosting in reverse.
-1. The sixth frame is turning anti-clockwise.
-1. The seventh frame is turning clockwise.
+| Frame # | Sprite                  | Description                |
+|--------:|:------------------------|:---------------------------|
+|       1 | <ShipFrame frame={1} /> | Ship, idle                 |
+|       2 | <ShipFrame frame={2} /> | Forward thrusters          |
+|       3 | <ShipFrame frame={3} /> | Boost                      |
+|       4 | <ShipFrame frame={4} /> | Reverse                    |
+|       5 | <ShipFrame frame={5} /> | Reverse boost              |
+|       6 | <ShipFrame frame={6} /> | Turning, counter-clockwise |
+|       7 | <ShipFrame frame={7} /> | Turning, clockwise         |
 
 Some frames will be overlayed on top of each other while playing. For example, if the ship is boosting and turning clockwise, frames 1, 3 and 7 are used together.
 

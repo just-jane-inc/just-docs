@@ -1,0 +1,33 @@
+---
+interface Props {
+    sheet: URL|string;
+    x?: number;
+    y?: number;
+    width: number;
+    height: number;
+}
+
+const { sheet, x = 0, y = 0, width, height } = Astro.props;
+const backgroundImageUrl = `${sheet}`;
+const title = `Spritesheet frame section from ${x}px to ${(x+width-1)}px`
+---
+<figure class="sprite-image" title=`${title}`/>
+
+<style define:vars={{
+    'background-image-url': `url(${backgroundImageUrl})`,
+    'x': `${-1 * x}px`,
+    'y': `${-1 * y}px`,
+    'width': `${width}px`,
+    'height': `${height}px`,
+}}>
+    .sprite-image {
+        display: inline-block;
+        width: var(--width);
+        height: var(--height);
+
+        background-image: var(--background-image-url);
+        background-position-x: var(--x);
+        background-position-y: var(--y);
+        background-repeat: no-repeat;
+    }
+</style>
