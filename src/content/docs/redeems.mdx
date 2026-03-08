@@ -1,0 +1,275 @@
+---
+title: Redeems
+description: Introduction to redeems
+---
+import {CardGrid} from "@astrojs/starlight/components";
+import RedeemCard from '../components/RedeemCard.astro';
+import {redeems} from "../redeems.ts";
+
+Enjoy the crazy stimmies Jane made, to distract her and keep yourselves
+entertained while she builds even more. Cwazy.
+
+Chat redeems can be paid by using
+[channel points](https://help.twitch.tv/s/article/channel-points-faq#viewer).
+Here is an overview of all the redeems and their cost in channel points.
+
+<CardGrid>{redeems.map((redeem) => <RedeemCard {...redeem} />)}</CardGrid>
+
+## On the clock
+
+As B.A.H.M.S. employee, you are given the tools to perform your job to the best
+of your abilities.
+
+### Just Clock In
+
+To start your shift, make sure to clock in. Any clock-in is immediately paid out
+in the full [Giga VIP that correspond to your number of clock-ins](/giga-vip/#clock-ins). 
+
+Jill may choose to recognize your clock-in and alert Jane your shift started.
+
+Any clock-ins at the start of the stream are listed off by Jane personally, to
+show her appreciation for your shift starting on time.
+
+### Just Write a Comment
+
+It's not in Jane's nature to document her code. It's all perfectly
+understandable, right?
+
+To help out yourself and your B.A.H.M.S. co-workers, you can make Jane write a
+comment in the code by using the "Just Write a Comment" redeem.
+
+Type a fun message to add to the comment. At some point in time, it will be added
+to the code.
+
+* [Best practices for writing code comments](https://stackoverflow.blog/2021/12/23/best-practices-for-writing-code-comments/).
+
+### Just Commit
+
+Changes to the code? Let's make sure we actually keep those somewhere safe.
+Make Jane commit her code. Write a fun message that is super relevant to the
+changes, right?
+
+Commits may happen immediately, or not, but they will happen at some point.
+
+* [Writing commit messages](https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/commit-messages/)
+* [`git commit` description](https://git-scm.com/docs/git-commit#_description)
+
+### Just Suggestions
+
+Did you think of something Jane could add to the bounce house? Maybe a slight
+improvement in the code? You have the power to make it so!
+
+Suggestions follow the format of `[title] description`
+
+```
+[Let juniper spin!] Juniper should be able to do a spin/dance
+```
+
+The above example is from [an actual suggestion](https://github.com/just-jane-inc/just__stream/issues/250).
+
+Any suggestion will produce a new issue in Jane's
+[list of GitHub issues](https://github.com/just-jane-inc/just__stream/issues).
+
+Before creating a suggestion, please look for any existing issue that already
+describes your suggestion. That would be super helpful.
+
+### Just Link
+
+Did you find a cool resource online? Perhaps you want to share a clip of an
+adorable bat cat?
+
+By using this redeem, your link will be verified by our highly qualified and
+skilled B.A.H.M.S. Uniform Resource Integrity people.
+
+When all is well, your link will be shared in chat, so we can all watch charming
+cat girls - I mean, look at the very serious documentation.
+
+### Just Unit Test
+
+Jane promises she will write a
+[unit test](https://en.wikipedia.org/wiki/Unit_testing).
+She will actually sit through the process of writing a unit test for her code.
+You asked for it!
+
+## Off the clock
+
+A well rested and entertained employee is a productive employee. Jane has
+stimmies for a wide variety of downtime.
+
+### Just Zshoom
+
+You get a ship in the [bounce house](/bahms/bounce-house/)...
+for like some amount of time, maybe.
+
+Here is how you play:
+
+1. Redeem the "Just Zshoom" redeem.
+2. Go to [game.bahms.org](https://game.bahms.org/) and log in using your Twitch account.
+3. Fly around and shoot as many orbs in the Bounce House as you can.
+
+Once your time is up, your ship will disappear from the Bounce House, and you'll
+see your score for that round in chat.
+
+### Just Juniper Pats
+
+Our lovely Tamagotchi-like Hedgehog loves it dearly when you give her gentle
+pats. Less than three.
+
+**N.B.:** There is an urban legend going around that somehow connects patting
+our dear Juniper to playing the [slot machine](/bahms/slot-machine/).
+
+### Just Gamba
+
+We [gamba](/bahms/slot-machine/), we pull the lever, win big gogogo. always be
+gambling.
+
+### Just Word Cloud
+
+Make a personalized word cloud of all your chats! every chat ever chatted
+straight out of the database into your warm embrace.
+
+Use [`!discord`](/commands/#info) to invite yourself to the Discord server, and
+see your personal art in all its glory.
+
+If you want to highlight specific words in your messages, use the following
+format in the redeem message:
+
+```
+regex:{expression} color:#RRGGBB
+```
+
+| Option               | Description                                                                                                                                                    |
+|:---------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `regex:{expression}` | Provide for `expression` a valid [regular expression](https://docs.python.org/3/library/re.html#regular-expression-syntax) between the `{` and `}` delimiters. |
+| `color:#RRGGBB`      | Provide an [RGB hexadecimal color notation](https://drafts.csswg.org/css-color/#hex-notation) between `#000000` and `#FFFFFF`.                                 |
+
+As an example, the [following expression](https://regex101.com/r/JMdZQk/1) makes
+all mentions of `Red Epicness` turn his signature brownish red color.
+
+```
+regex:{Red.Epicness} color:#FF4400
+```
+
+* https://docs.python.org/3/library/re.html#regular-expression-syntax
+* https://regex101.com/
+* https://drafts.csswg.org/css-color/#hex-notation
+
+### Just Pyramid Scheme
+
+You want to get in on my [giga-vip downline](/giga-vip/#pyramid-scheme)?
+
+When redeeming the pyramid scheme, you buy in on the next redeem of the pyramid
+scheme. Every time the Pyramid Scheme is redeemed, all the chatters who previously
+redeemed the scheme will receive 1 Giga VIP, every time.
+
+Once the scheme is redeemed, the cost of the scheme increases according to the
+formula:
+
+[2<sup>n−1</sup>](https://www.wolframalpha.com/input?i=2%5E%28n%E2%88%921%29+for+n+from+1+to+16)
+
+Where `n` is the number of times the scheme has been redeemed during the current
+stream. At the start of the next stream, the cost is reset.
+
+| Redeems | Channel points |
+|--------:|---------------:|
+|       1 |              1 |
+|       2 |              2 |
+|       3 |              4 |
+|       4 |              8 |
+|       5 |             16 |
+|       6 |             32 |
+|     ... |            ... | 
+
+## Care for Jane
+
+Jane is so focussed on making the perfect stimmies, that she sometimes needs a
+little reminder for the simple joys of life.
+
+### Just Hydrate
+
+Make sure that Jane gets a sip of water, maybe. Jane will probably delegate this
+to [Juniper](/bahms/juniper/), who takes a little sip in her stead.
+less than three
+
+### Just Stretch
+
+Jane corrects her posture and stretches her body. Feel free to stretch along.
+*pop*
+
+### Just Stay Positive
+
+A disembodied voice whispers about how strong, independent, capable, and worthy
+of good things you are.
+
+### Just Sleep
+
+Jane ends the stream, and sleeps about it.
+
+## Interact with Jane
+
+Jane is doing her best but is probably not reading your messages as often as she
+should.
+
+### Just Pay Attention to Me
+
+Jane will absolutely, unequivocally read your message.
+Every syllable of it. Each iota of your utterance, Jane shall read.
+
+_stares..._
+
+She'll interact with chat. She's trying.
+
+### Just Switch Model
+
+Make Jane switch between her different models. From professional lab coat to 
+comfy axolotl and from sly fox to friendly dog girl. She wears them so well.
+
+Model switching is done manually, so be sure to let Jane or a mod know if the
+redeem is missed.
+
+### Just Spoken for Me
+
+Jane will turn _your_ text to speech. No thoughts, head empty. Jane will be your
+TTS and speak what you wrote in the redeem message.
+
+### Just Draw Me Like One of Your Cat Girls
+
+Jane will do your pixel art commission. She will put at least 20 minutes into it.
+Maybe on stream, maybe not. 
+
+Commissions are limited to just a few per stream, and Jane will choose an
+opportune moment to bundle them into an art segment.
+
+She might refund if she doesn't feel like doing art. &lt;3
+
+> **N.B.** Jane sometimes pauses the redeem for a length of time, to recharge
+>   her creativity.
+
+## Interact with Jill
+
+Interaction with [Jill](/bahms/jill/) is normally done through
+[chat commands](/commands/#jill) ...
+
+### Just Say Hey Jill
+
+... However, when you spent all your [Giga VIP](/giga-vip/), you can still talk
+to Jill using the "Just Say Hey Jill" redeem.
+
+## Custom voice
+
+You may have heard some people using high quality voices with [TTS](/bahms/tts/).
+Most likely these are people who have used the [custom voice redeem](#just-let-me-speak).
+
+Custom voices become the persons default and can only be used by them.
+
+### Just Let Me Speak
+
+We add your voice as a [custom TTS voice](/bahms/tts/#custom-voices).
+
+This requires you to submit audio recordings of your own voice.
+One of the moderators will get in touch with you after redeeming a custom voice,
+to give you specific instructions on how to record your voice.
+
+You will then have the ability to use it, exclusively, for at least 20 streams.
+After 20 streams your TTS voice may reset to room for someone else to have their
+voice customized.
