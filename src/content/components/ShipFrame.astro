@@ -1,12 +1,12 @@
 ---
 import SpriteImage from "./SpriteImage.astro";
+import sheet from '../../../public/ship-sheet.png';
 
 interface Props {
     frame: 1|2|3|4|5|6|7;
 }
 
-const { frame, scale = 1.0 } = Astro.props;
-const sheet = '../../assets/ship-sheet.png';
+const { frame } = Astro.props;
 const width = 80;
 const x = (frame - 1) * width;
 const title = `Spritesheet frame section from ${x}px to ${(x + width - 1)}px`
