@@ -6,8 +6,10 @@
     "dev": "astro dev",
     "dev:host": "astro dev --host",
     "start": "astro dev",
+    "prebuild": "rm -rf dist",
     "build": "astro build",
     "preview": "astro preview",
+    "preview:host": "astro preview --host",
     "astro": "astro"
   },
   "dependencies": {
