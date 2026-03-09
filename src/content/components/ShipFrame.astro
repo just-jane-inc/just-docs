@@ -1,0 +1,20 @@
+---
+import SpriteImage from "./SpriteImage.astro";
+
+interface Props {
+    frame: 1|2|3|4|5|6|7;
+}
+
+const { frame, scale = 1.0 } = Astro.props;
+const sheet = '/src/assets/ship-sheet.png';
+const width = 80;
+const x = (frame - 1) * width;
+const title = `Spritesheet frame section from ${x}px to ${(x + width - 1)}px`
+---
+<SpriteImage
+    sheet={sheet}
+    width={width}
+    height={45}
+    x={x}
+    title={title}
+/>
