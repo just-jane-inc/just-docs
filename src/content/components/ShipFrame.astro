@@ -6,7 +6,7 @@ interface Props {
 }
 
 const { frame, scale = 1.0 } = Astro.props;
-const sheet = '/src/assets/ship-sheet.png';
+const sheet = '../../assets/ship-sheet.png';
 const width = 80;
 const x = (frame - 1) * width;
 const title = `Spritesheet frame section from ${x}px to ${(x + width - 1)}px`
