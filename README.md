@@ -48,7 +48,7 @@ When you have created a local `dist/` output, you can preview the result with
 the following command:
 
 ```bash
-num run preview
+npm run preview
 ```
 
 This will expose the production preview on `http://localhost:4321/`
