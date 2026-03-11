@@ -1,6 +1,7 @@
 ---
+import {getImage} from "astro:assets";
 interface Props {
-    sheet: URL|string;
+    sheet: string;
     x?: number;
     y?: number;
     width: number;
@@ -9,12 +10,12 @@ interface Props {
 }
 
 const { sheet, x = 0, y = 0, width, height, title = "" } = Astro.props;
-const backgroundImageUrl = `${sheet}`;
+const backgroundImage = await getImage({src: sheet, format: 'png'});
 ---
 <figure class="sprite-image" title=`${title}`/>
 
 <style define:vars={{
-    'background-image-url': `url(${backgroundImageUrl})`,
+    'background-image-url': `url(${backgroundImage.src})`,
     'x': `${-1 * x}px`,
     'y': `${-1 * y}px`,
     'width': `${width}px`,

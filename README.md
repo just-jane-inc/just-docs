@@ -9,6 +9,9 @@ Docker compose.
 
 ## Node.js
 
+<details>
+<summary>How to develop locally using Node.js on your host system.</summary>
+
 Be sure to run Node version 22.
 
 ### Installation of `node_modules/`
@@ -31,7 +34,33 @@ npm run dev
 
 This will expose the Astro server on `http://localhost:4321/`
 
+### Creating a production build
+
+The following command will create a production build in the `dist/` folder.
+
+```bash
+npm run build
+```
+
+### Previewing the production build
+
+When you have created a local `dist/` output, you can preview the result with
+the following command:
+
+```bash
+npm run preview
+```
+
+This will expose the production preview on `http://localhost:4321/`
+
+One should always do this before opening a pull request.
+</details>
+
+
 ## Docker Compose
+
+<details>
+<summary>How to develop locally using Docker Compose.</summary>
 
 In order to use the local development server through Docker Compose, one needs to
 run the following command:
@@ -47,8 +76,33 @@ close your terminal. The difference is a matter of preference.
 This will do the following, in order:
 
 1. Install `node_modules`
-2. Run `npm run dev`
+2. Run `npm run dev:host`
 3. Expose the Astro server on `http://localhost:4321/`
+
+### Production preview
+
+In order to test against a build as it would be deployed on production, use the
+`preview` profile when bringing up the Docker Compose project:
+
+```bash
+docker compose --profile preview up -d
+```
+
+This will do the following, on top of the `dev` environment, in order:
+
+1. Remove the `dist/` directory.
+2. Create a production build in `dist/`.
+3. Run `npm run preview:host`
+4. Expose a production preview on `http://localhost:4322/`
+
+> **N.B.**: This will run side-by-side with the `dev` environment on port `4321`.
+
+Be sure to pull down the project using the `preview` profile too, so it won't
+leave up the preview server:
+
+```bash
+docker compose --profile preview down
+```
 
 ### Running NPM commands
 
@@ -79,6 +133,7 @@ Or use `-f` to follow the logs:
 ```bash
 docker compose logs -f -n 30 app
 ```
+</details>
 
 # Extract Twitch Redeems
 

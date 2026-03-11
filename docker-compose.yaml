@@ -56,3 +56,55 @@ services:
     depends_on:
       npm:
         condition: service_completed_successfully
+
+  # Build the dist files.
+  build:
+    # Inherit from the `npm` service.
+    extends:
+      service: npm
+
+    # Only start when the preview profile is provided.
+    profiles:
+      - preview
+
+    command:
+      - run
+      - build
+
+    # Ensure that all node modules are installed before building the application.
+    depends_on:
+      npm:
+        condition: service_completed_successfully
+
+  # Production preview.
+  preview:
+    # Inherit from the `npm` service.
+    extends:
+      service: npm
+
+    # Only start when the preview profile is provided.
+    profiles:
+      - preview
+
+    # Whenever the Astro server crashes, start it again, unless we manually stop
+    #   the application.
+    restart: unless-stopped
+
+    # Expose the default Astro port to the host network.
+    ports:
+      - '4322:4321/tcp'
+
+    # Run the dev server.
+    command:
+      - run
+      # The `preview:host` command is equal to `preview` with `--host` to attach
+      #   it to the internal Docker network, so it can be visited from the host
+      #   OS.
+      - preview:host
+
+    # Ensure that all node modules are installed before starting the server.
+    depends_on:
+      npm:
+        condition: service_completed_successfully
+      build:
+        condition: service_completed_successfully
