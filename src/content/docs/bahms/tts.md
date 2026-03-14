@@ -44,7 +44,6 @@ You can either start your `!tts` message with `[voice]`, using the provided voic
 
 ### available voices
 
-- olivia
 - ruth
 - stephen
 - matthew
