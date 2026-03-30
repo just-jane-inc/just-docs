@@ -2,7 +2,7 @@
 title: Redeems
 description: Introduction to redeems
 ---
-import {CardGrid} from "@astrojs/starlight/components";
+import {CardGrid, Steps} from "@astrojs/starlight/components";
 import RedeemCard from '../components/RedeemCard.astro';
 import {redeems} from "../redeems.ts";
 import ShipFrame from '../components/ShipFrame.astro';
@@ -104,9 +104,11 @@ for like some amount of time, maybe.
 
 Here is how you play:
 
+<Steps>
 1. Redeem the "Just Zshoom" redeem.
 2. Go to [game.bahms.org](https://game.bahms.org/) and log in using your Twitch account.
 3. Fly around and shoot as many orbs in the Bounce House as you can.
+</Steps>
 
 Once your time is up, your ship will disappear from the Bounce House, and you'll
 see your score for that round in chat.
