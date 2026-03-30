@@ -7,14 +7,14 @@ type RedeemProps = ComponentProps<typeof RedeemCard>;
 const broadcasterId = '1112386096';
 const iconBaseUrl = 'https://static-cdn.jtvnw.net/custom-reward-images'
 const defaultIcon = new URL(`${iconBaseUrl}/default-2.png`)
-const icons = {
+const icons: Record<'1x'|'2x', string> = {
     '1x': 'custom-2.png',
     '2x': 'custom-4.png'
 }
 
 const redeemIcon = (
     redeemIdentifier: string,
-    size: keyof icons = '1x'
+    size: keyof typeof icons = '1x'
 ) => new URL(`${iconBaseUrl}/${broadcasterId}/${redeemIdentifier}/${icons[size]}`)
 
 // @todo Let this list be populated by the Twitch API.
