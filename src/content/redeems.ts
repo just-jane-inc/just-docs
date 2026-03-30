@@ -27,13 +27,6 @@ export const redeems: RedeemProps[] = [
         channelPoints: '2<sup>n−1</sup>'
     },
     {
-        title: 'Just Zshoom',
-        anchor: '#just-zshoom',
-        iconBackgroundColor: 'rgb(189, 168, 255)',
-        iconUrl: defaultIcon,
-        channelPoints: 1
-    },
-    {
         title: 'Just Clock In',
         anchor: '#just-clock-in',
         iconBackgroundColor: 'rgb(122, 162, 247)',
@@ -41,13 +34,26 @@ export const redeems: RedeemProps[] = [
         channelPoints: 1
     },
     {
+        title: 'Just Clock Out',
+        anchor: '#just-clock-out',
+        iconBackgroundColor: 'rgb(255, 158, 100)',
+        iconUrl: redeemIcon('6da4ae7c-9540-450f-ac7f-38d8bdbcf547/69dc474c-0cdf-49dd-94d0-bbd099c68c8a'),
+        channelPoints: 2
+    },
+    {
+        title: 'Just Zshoom',
+        anchor: '#just-zshoom',
+        iconBackgroundColor: 'rgb(189, 168, 255)',
+        iconUrl: redeemIcon('47b9d636-4e9e-4587-8f0d-8b28a654e9dd/844bd8db-095e-4a87-8bfe-b6792d52927e'),
+        channelPoints: 4
+    },
+    {
         title: 'Just Juniper Pats',
         anchor: '#just-juniper-pats',
         iconBackgroundColor: 'rgb(67, 47, 106)',
         iconUrl: redeemIcon('fe75c4b6-70cc-4bf0-9255-cb77b6687919/d5deb9a5-1038-4286-b557-c7b59753844e'),
-        channelPoints: 1
+        channelPoints: 4
     },
-
     {
         title: 'Just Gamba',
         anchor: '#just-gamba',
@@ -119,18 +125,18 @@ export const redeems: RedeemProps[] = [
         channelPoints: 512
     },
     {
-        title: 'Just Stay Positive',
-        anchor: '#just-stay-positive',
-        iconBackgroundColor: 'rgb(158, 206, 106)',
-        iconUrl: redeemIcon('7eadceb8-cf0e-4e88-9490-09eaf4012c12/0faae6ac-1b47-44be-b330-3b8c6a76f2cd'),
+        title: 'Just Nya',
+        anchor: '#just-nya',
+        iconBackgroundColor: 'rgb(192, 202, 245)',
+        iconUrl: redeemIcon('d5886b0a-e2c8-43c6-9b6f-9edf6648d8e5/f196bafb-a11b-44e7-8e22-c921f10f6b35'),
         channelPoints: '1,024'
     },
     {
-        title: 'Just Switch Model',
-        anchor: '#just-switch-model',
-        iconBackgroundColor: 'rgb(125, 207, 255)',
-        iconUrl: redeemIcon('cfc8d5df-d82f-478a-a0b1-0c3bce729595/c943437f-6df9-49bd-804d-65580c39cb83'),
-        channelPoints: '2,048'
+        title: 'Just Bark',
+        anchor: '#just-bark',
+        iconBackgroundColor: 'rgb(192, 202, 245)',
+        iconUrl: defaultIcon,
+        channelPoints: '4,096'
     },
     {
         title: 'Just Spoken for Me',
@@ -140,11 +146,11 @@ export const redeems: RedeemProps[] = [
         channelPoints: '4,096'
     },
     {
-        title: 'Just Draw Me Like One of Your Cat Girls',
-        anchor: '#just-draw-me-like-one-of-your-cat-girls',
-        iconBackgroundColor: 'rgb(107, 44, 157)',
-        iconUrl: redeemIcon('de33f629-f96f-4cb3-82dc-e8f6419acfc9/585d9a63-17bc-4166-9564-461ec9cd99ca'),
-        channelPoints: '4,096'
+        title: 'Just Ara Ara',
+        anchor: '#just-ara-ara',
+        iconBackgroundColor: 'rgb(222, 173, 255)',
+        iconUrl: defaultIcon,
+        channelPoints: '8,192'
     },
     {
         title: 'Just Let Me Speak',
@@ -153,18 +159,4 @@ export const redeems: RedeemProps[] = [
         iconUrl: redeemIcon('e5c0380c-2afd-4796-8296-d7212b2f2144/4bd25155-737e-4abc-8c96-a4fbc8861b4d'),
         channelPoints: '32,768'
     },
-    {
-        title: 'Just Sleep',
-        anchor: '#just-sleep',
-        iconBackgroundColor: 'rgb(86, 95, 137)',
-        iconUrl: redeemIcon('1310fdc6-13a3-4e61-b9c8-ecf47e3d4e6a/c44fbf6e-9449-4395-858f-b00ea3e036ed'),
-        channelPoints: '131,072'
-    },
-    {
-        title: 'Just Unit Test',
-        anchor: '#just-unit-test',
-        iconBackgroundColor: 'rgb(192, 202, 245)',
-        iconUrl: redeemIcon('fa193225-0f67-403a-974a-1eac1a2d4d96/e5c98bdd-c628-4d4c-b1b8-f6f1e653b170'),
-        channelPoints: '131,072'
-    }
 ]
