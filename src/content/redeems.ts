@@ -6,7 +6,7 @@ type RedeemProps = ComponentProps<typeof RedeemCard>;
 // Helpers to make manually configured icon URLs easier to read.
 const broadcasterId = '1112386096';
 const iconBaseUrl = 'https://static-cdn.jtvnw.net/custom-reward-images'
-const defaultIcon = new URL(`${iconBaseUrl}/default-2.png`)
+// const defaultIcon = new URL(`${iconBaseUrl}/default-2.png`)
 const icons: Record<'1x'|'2x', string> = {
     '1x': 'custom-2.png',
     '2x': 'custom-4.png'
@@ -135,7 +135,7 @@ export const redeems: RedeemProps[] = [
         title: 'Just Bark',
         anchor: '#just-bark',
         iconBackgroundColor: 'rgb(192, 202, 245)',
-        iconUrl: defaultIcon,
+        iconUrl: redeemIcon('9e635557-eb5d-4f26-a8e0-226e7a2af3df/66b5a282-e959-4a8b-8aa5-8d973d56f415'),
         channelPoints: '4,096'
     },
     {
@@ -149,7 +149,7 @@ export const redeems: RedeemProps[] = [
         title: 'Just Ara Ara',
         anchor: '#just-ara-ara',
         iconBackgroundColor: 'rgb(222, 173, 255)',
-        iconUrl: defaultIcon,
+        iconUrl: redeemIcon('02b556de-4164-4c88-93d4-29fc0d980838/5c1614c9-1667-4493-8298-b2377c4865fa'),
         channelPoints: '8,192'
     },
     {
