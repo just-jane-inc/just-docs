@@ -15,16 +15,16 @@ This table shows the possible rewards for either a pair or triple of a symbol al
 
 The probability of a symbol appearing is `<symbol frequency> / <sum of all frequencies>`
 
-| Symbol                                          |     Pair      |    Triple     | Frequency |
-| :---------------------------------------------- | :-----------: | :-----------: | --------: |
-| Yuzu                                            | 1 Shame token | 3 Shame token |         1 |
-| Boykisser                                       |  4 Giga VIP   |  10 Giga VIP  |         2 |
-| 7                                               |  4 Giga VIP   |  10 Giga VIP  |         2 |
-| [Shiba](https://www.twitch.tv/mrtinus)          |  2 Giga VIP   |  5 Giga VIP   |         3 |
-| [Capybara](https://www.twitch.tv/andretherican) |  2 Giga VIP   |  5 Giga VIP   |         3 |
-| [Asrael](https://www.twitch.tv/asrael_io)       |  2 Giga VIP   |  5 Giga VIP   |         5 |
-| Toast                                           |  2 Giga VIP   |  5 Giga VIP   |         5 |
-| Axe                                             |  2 Giga VIP   |  5 Giga VIP   |         5 |
-| Cherry                                          |  2 Giga VIP   |  5 Giga VIP   |         5 |
-| Blob                                            |  2 Giga VIP   |  5 Giga VIP   |        10 |
-| [Abtar](https://www.twitch.tv/abtar)            |  2 Giga VIP   |  5 Giga VIP   |        10 |
+| Symbol                                          |     Pair      |     Triple     | Frequency |
+| :---------------------------------------------- | :-----------: | :------------: | --------: |
+| Yuzu                                            | 1 Shame token | 3 Shame tokens |         1 |
+| Boykisser                                       |  4 Giga VIP   |  10 Giga VIP   |         2 |
+| 7                                               |  4 Giga VIP   |  10 Giga VIP   |         2 |
+| [Shiba](https://www.twitch.tv/mrtinus)          |  2 Giga VIP   |   5 Giga VIP   |         3 |
+| [Capybara](https://www.twitch.tv/andretherican) |  2 Giga VIP   |   5 Giga VIP   |         3 |
+| [Asrael](https://www.twitch.tv/asrael_io)       |  2 Giga VIP   |   5 Giga VIP   |         5 |
+| Toast                                           |  2 Giga VIP   |   5 Giga VIP   |         5 |
+| Axe                                             |  2 Giga VIP   |   5 Giga VIP   |         5 |
+| Cherry                                          |  2 Giga VIP   |   5 Giga VIP   |         5 |
+| Blob                                            |  2 Giga VIP   |   5 Giga VIP   |        10 |
+| [Abtar](https://www.twitch.tv/abtar)            |  2 Giga VIP   |   5 Giga VIP   |        10 |
