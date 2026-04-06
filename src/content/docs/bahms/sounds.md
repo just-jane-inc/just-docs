@@ -58,3 +58,10 @@ but this **might change in the future** depending on sounds use.
 | `!whip`  |           100           | `!dominatrix`      |
 
 Use the `!my-titles` commands to get a list of the sounds you have unlocked.
+
+## Contribute Sounds
+
+Want to contribute your bespoke sound to the bounce house? Absolutely!
+
+Use [barks](https://barks.bahms.org/) to upload your own audio clips.
+Clear, 48 kHz audio clips have a better shot at being accepted.
