@@ -86,10 +86,10 @@ chat has fun in the [bounce house](/bahms/bounce-house/) while I ignore them
 
 | command              | cost ([gv](/giga-vip/)) | description                                   |
 |:---------------------|:-----------------------:|:----------------------------------------------|
-| `!vroom`             |            1            | gives you more speed, persists between deaths |
+| `!vroom`             |            0            | gives you more speed, persists between deaths |
 | `!gigantify-me`      |            1            | drastically grows your orb                    |
 | `!vanish`            |            0            | remove yourself from the bounce house         |
-| `!spin`              |            0            | spins your orb around                         |
+| `spin`               |            0            | spins your orb around (works anywhere in msg) |
 | `!whatever <msg>`    |            1            | adds your message to the bounce house         |
 | `!my-color`          |            0            | gets your configured color                    |
 | `!set-color <#hex6>` |            0            | attempts to set your unique user color        |

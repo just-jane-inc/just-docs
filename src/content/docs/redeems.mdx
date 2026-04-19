@@ -5,7 +5,6 @@ description: Introduction to redeems
 import {CardGrid, Steps} from "@astrojs/starlight/components";
 import RedeemCard from '../components/RedeemCard.astro';
 import {redeems} from "../redeems.ts";
-import ShipFrame from '../components/ShipFrame.astro';
 
 Enjoy the crazy stimmies Jane made, to distract her and keep yourselves
 entertained while she builds even more. Cwazy.
@@ -26,8 +25,8 @@ of your abilities.
 To start your shift, make sure to clock in. Any clock-in is immediately paid out
 in the full [Giga VIP that correspond to your number of clock-ins](/giga-vip/#clock-ins) this season.
 
-Jill may choose to recognize your clock-in and alert Jane your shift started. 
-Jill is eager to read clock-ins during the beginning of a stream. 
+Jill may choose to recognize your clock-in and alert Jane your shift started.
+Jill is eager to read clock-ins during the beginning of a stream.
 She keeps track of major milestones, too! I wonder what she'll say when one reaches their 100<sup>th</sup> clock-in?
 
 Any clock-ins at the start of the stream are listed off by Jane personally, to
@@ -101,51 +100,7 @@ stimmies for a wide variety of downtime.
 
 ### Just Zshoom
 
-You get a ship in the [bounce house](/bahms/bounce-house/)...
-for like some amount of time, maybe.
-
-Here is how you play:
-
-<Steps>
-1. Redeem the "Just Zshoom" redeem.
-2. Go to [game.bahms.org](https://game.bahms.org/) and log in using your Twitch account.
-3. Fly around and shoot as many orbs in the Bounce House as you can.
-</Steps>
-
-Once your time is up, your ship will disappear from the Bounce House, and you'll
-see your score for that round in chat.
-
-<details>
-<summary>How to customize your spaceship</summary>
-
-![Spritesheet template for the original spaceship](/ship-sheet.png "Spritesheet template for the original spaceship")
-
-There are seven frames. Each frame is 80 x 45, resulting in a single 560 x 45 spritesheet.
-
-| Frame # | Sprite                  | Description                |
-|--------:|:------------------------|:---------------------------|
-|       1 | <ShipFrame frame={1} /> | Ship, idle                 |
-|       2 | <ShipFrame frame={2} /> | Forward thrusters          |
-|       3 | <ShipFrame frame={3} /> | Boost                      |
-|       4 | <ShipFrame frame={4} /> | Reverse                    |
-|       5 | <ShipFrame frame={5} /> | Reverse boost              |
-|       6 | <ShipFrame frame={6} /> | Turning, counter-clockwise |
-|       7 | <ShipFrame frame={7} /> | Turning, clockwise         |
-
-Some frames will be overlayed on top of each other while playing. For example, if the ship is boosting and turning clockwise, frames 1, 3 and 7 are used together.
-
-Pure white pixels will be recolored as the player's configured color (see [!my-color](/commands#bounce-house)). A customized ship requires at least 1 pure white pixel.
-
-![This shows how the white pixels are turned into the player's unique color](../../assets/ship-my-color-integration-demonstration.png "This shows how the white pixels are turned into the player's unique color")
-
-Template (either will do):
-* [aseprite](/ship-sheet.aseprite)
-* [png](/ship-sheet.png)
-
-The missiles are not customizable.
-
-There is no system in place at this time to upload spritesheet. Discord works in the meantime (see [!discord](/commands#info)).
-</details>
+Allows you to control a ship in the [bounce house](/bahms/bounce-house/#ships)... for some amount of time, maybe.
 
 ### Just Juniper Pats
 
