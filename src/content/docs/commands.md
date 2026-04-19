@@ -74,14 +74,14 @@ our lovely [AI co-star, Jill](/bahms/jill/)
 Jill loves to learn about you by [whispering](/bahms/jill/#whispering) commands.
 
 ## tts
+
 join the voices in my head
 
-| command              | cost ([gv](/giga-vip/)) | description                                     |
+| command              | cost ([gv](/giga-vip/)) | description                                       |
 |:---------------------|:-----------------------:|:--------------------------------------------------|
 | `!tts [voice] <msg>` |      market value       | use [tts](/bahms/tts/)                            |
 | `!tts-price`         |            0            | prints the current market-value price of tts      |
 | `!my-voice <voice>`  |            0            | sets your default [tts voice](/bahms/tts/#voices) |
-
 
 ## bounce house
 chat has fun in the [bounce house](/bahms/bounce-house/) while I ignore them
