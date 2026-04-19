@@ -63,11 +63,13 @@ what are [giga-vip](/giga-vip/) levels? great question
 | `!gifta-vip <@user> <amount>` |            0            | transfer your giga-vip to another user              |
 
 ## jill
+
 our lovely [AI co-star, Jill](/bahms/jill/)
 
 | command       | cost ([gv](/giga-vip/)) | description                                     |
 |:--------------|:-----------------------:|:------------------------------------------------|
-| `!jill <msg>` |            2            | send a message to Jill, she will always respond |
+| `!jill <msg>` |      market value       | send a message to Jill, she will always respond |
+| `!jill-price` |            0            | get current Jill price                          |
 
 Jill loves to learn about you by [whispering](/bahms/jill/#whispering) commands.
 
