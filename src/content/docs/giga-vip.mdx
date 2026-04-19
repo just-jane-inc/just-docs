@@ -2,7 +2,7 @@
 title: Giga VIP
 description: Introduction to Giga VIP
 ---
-import { Aside } from '@astrojs/starlight/components';
+import {Aside} from '@astrojs/starlight/components';
 
 Giga VIP is a custom currency used for various stream features.
 It is often shortened as `gv`.
@@ -24,10 +24,14 @@ Mega VIP is often shortened as `mv`.
 
 ### Clock-ins
 
-Clocking in using the [clock-in redeem](/redeems/#just-clock-in) will give you 
-[`floor(log2(<clock-ins>))`](https://www.wolframalpha.com/input?i=floor%28log2%28n%29%29+for+1+to+127)
-Giga VIP.
+Clocking in using the [clock-in redeem](/redeems/#just-clock-in) will give you [`floor(log2(<clock-ins>))`](https://www.wolframalpha.com/input?i=floor%28log2%28n%29%29+for+1+to+127) Giga VIP.
 In simpler terms, you get Giga VIP in the amount of the largest power of two, smaller or equal than your number of clock-ins.
+
+You can only clock in once per stream.
+
+<Aside type="note">
+    Clock-ins are reset every season. But don't worry, old data is saved and will be displayed on our websites in the future.
+</Aside>
 
 #### Example table
 
@@ -47,11 +51,11 @@ In simpler terms, you get Giga VIP in the amount of the largest power of two, sm
 Clocking out using the [clock-out redeem](/redeems/#just-clock-out) will give
 you Giga VIP relative to the time you have been clocked-in this stream.
 
+You can only clock out once per stream.
+
 <Aside type="tip">
     Your reward will be higher if you clock out when the credits roll.
 </Aside>
-
-You can only clock out once per stream.
 
 ### Pyramid Scheme
 
@@ -67,14 +71,6 @@ Conditions apply, more information on [the slot machine page](/bahms/slot-machin
 
 The winner of a [duel](/bahms/duels) get 1 Giga VIP.
 Conditions apply, more information on [the duels page](/bahms/duels).
-
-### Thighs
-
-Sending `lilbun1Thigh` as [a gigantified emote](https://help.twitch.tv/s/article/power-ups) will give you 1 Giga VIP.
-
-Please go subscribe and support [LilBunnny](https://www.twitch.tv/lilbunnny), she is a great streamer.
-
-![lilbun1Thigh](https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_70fb3859afe54f58b7021d0fe305f609/default/dark/3.0)
 
 ### First-time chat
 
@@ -96,5 +92,5 @@ Chatting for the first time gives you 5 Giga VIP.
 
 ## Usercards
 
-Giga-vip and other information can be found on [usercards](https://bahms.org/usercard/). 
+Giga-vip and other information can be found on [usercards](https://bahms.org/usercard/).
 Anyone may look up anyone's usercard.
