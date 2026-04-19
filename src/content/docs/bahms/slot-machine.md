@@ -3,7 +3,9 @@ title: Slot Machine
 description: Introduction to gamba
 ---
 
-Are you a gambling addict? You should probably get help. Call `1-800-GAMBLER`.
+Are you a gambling addict?
+You should probably get help.
+Call `1-800-GAMBLER`.
 
 The slot machine is a fun little game, tied to the [gamble redeem](/redeems/#just-gamba).
 
@@ -16,7 +18,7 @@ This table shows the possible rewards for either a pair or triple of a symbol al
 The probability of a symbol appearing is `<symbol frequency> / <sum of all frequencies>`
 
 | Symbol                                          |     Pair      |     Triple     | Frequency |
-| :---------------------------------------------- | :-----------: | :------------: | --------: |
+|:------------------------------------------------|:-------------:|:--------------:|----------:|
 | Yuzu                                            | 1 Shame token | 3 Shame tokens |         1 |
 | Boykisser                                       |  4 Giga VIP   |  10 Giga VIP   |         2 |
 | 7                                               |  4 Giga VIP   |  10 Giga VIP   |         2 |
