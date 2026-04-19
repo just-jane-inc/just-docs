@@ -20,20 +20,20 @@ some commands accept arguments:
 - `<required>` arguments surrounded by `<>` angle brackets are required
 
 ## titles
+
 single time purchase of a title that is used to unlock other commands or features.
 
-| command            | cost ([gv](/giga-vip/)) | description                                         |
-|:-------------------|:-----------------------:|:----------------------------------------------------|
-| `!my-titles`       |            0            | print titles you have unlocked                      |
-| `!rain-maker`      |           25            | use rain [sounds](/bahms/sounds/#paid-sounds)       |
-| `!thunder-god`     |           50            | use thunder [sounds](/bahms/sounds/#paid-sounds)    |
-| `!silver-slurper`  |           50            | use slurp [sounds](/bahms/sounds/#paid-sounds)      |
-| `!ara-ara-mommy`   |           50            | use ara-ara [sounds](/bahms/sounds/#paid-sounds)    |
-| `!uwu-people`      |           50            | use uwu [sounds](/bahms/sounds/#paid-sounds)        |
-| `!ermily`          |           50            | use erm [sounds](/bahms/sounds/#paid-sounds)        |
-| `!heckler`         |           75            | use boo/heckle [sounds](/bahms/sounds/#paid-sounds) |
-| `!dominatrix`      |           100           | use [`!whip`](/bahms/sounds/#paid-sounds) command   |
-| `!doggirl-trainer` |           250           | probably does nothing                               |
+| command            | cost ([gv](/giga-vip/)) | description                                       |
+|:-------------------|:-----------------------:|:--------------------------------------------------|
+| `!my-titles`       |            0            | print titles you have unlocked                    |
+| `!rain-maker`      |           25            | use rain [sounds](/bahms/sounds/#paid-sounds)     |
+| `!thunder-god`     |           50            | use thunder [sounds](/bahms/sounds/#paid-sounds)  |
+| `!silver-slurper`  |           50            | use slurp [sounds](/bahms/sounds/#paid-sounds)    |
+| `!ara-ara-mommy`   |           50            | use ara-ara [sounds](/bahms/sounds/#paid-sounds)  |
+| `!uwu-people`      |           50            | use uwu [sounds](/bahms/sounds/#paid-sounds)      |
+| `!ermily`          |           50            | use erm [sounds](/bahms/sounds/#paid-sounds)      |
+| `!dominatrix`      |           100           | use [`!whip`](/bahms/sounds/#paid-sounds) command |
+| `!doggirl-trainer` |           250           | probably does nothing =^-^=                       |
 
 ## info
 commands that may be informative to you. who knows?
