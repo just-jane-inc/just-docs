@@ -2,7 +2,7 @@
 title: just__jane
 description: A quick overview of all the B.A.H.M.S.
 next: false
-template: splash
+tableOfContents: false
 hero:
   image:
     file: ../../assets/just__jane.png
@@ -16,20 +16,12 @@ hero:
       mostly software development related content where I primarily make
       twitch-integrated software.
     </p>
-  actions:
-    - text: Chat commands
-      link: /commands/
-      icon: comment-alt
-    - text: Redeems
-      link: /redeems/
-      icon: heart
-    - text: Watch live
-      link: https://www.twitch.tv/just__jane/
-      icon: twitch
-      attrs:
-        target: _blank
 ---
-import {Steps, CardGrid, LinkCard} from "@astrojs/starlight/components";
+import {Steps, CardGrid, LinkCard, LinkButton} from "@astrojs/starlight/components";
+
+<LinkButton icon="comment-alt" href="/commands/">Chat commands</LinkButton>
+<LinkButton icon="heart" href="/redeems/">Redeems</LinkButton>
+<LinkButton icon="twitch" href="https://www.twitch.tv/just__jane/">Watch live</LinkButton>
 
 ## B.A.H.M.S.
 
