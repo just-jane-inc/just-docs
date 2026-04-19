@@ -43,6 +43,7 @@ export default defineConfig({
                 {label: 'Commands', slug: 'commands'},
                 {label: 'Redeems', slug: 'redeems'},
             ],
+            routeMiddleware: './src/routeData.ts'
         }),
     ],
 });
