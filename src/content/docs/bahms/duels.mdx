@@ -2,6 +2,7 @@
 title: Duels
 description: Introduction to duels
 ---
+import {Aside} from "@astrojs/starlight/components";
 
 Ever wanted to duel another chatter?
 Well you're in luck!
@@ -9,10 +10,16 @@ Simply **reply to a message** with the command `!duel` and bang it out.
 
 Duels are a way to challenge another chatter to a shootout with their message at stake.
 If the duelled person loses, their message is deleted.
+If the dueller loses, they are prevented from duelling for some time.
 
 Apart from deleting messages, the winner of a duel also receives a [giga-vip](/giga-vip) level.
 
 Duels appear at the top of the screen with both player's orbs starting at the center and moving apart in preparation to shoot.
+
+<Aside type="note">
+    You can opt out of duels on your [usercard](https://bahms.org/usercard/).
+    Make sure you are logged-in to see the option!
+</Aside>
 
 ### How to play
 
@@ -20,14 +27,22 @@ After a duel is started, music will play and when the music ends, both parties w
 
 To shoot, type either `!bang`, `bang bang` or `!!`.
 
-**Be mindful of stream delay.** Typically, Twitch streams can be delayed from 1 second up to 6 seconds or more.
-Try and estimate your delay and account for it to have a better chance at winning.
-
-**If you shoot too early**, you will be on cooldown for 3 seconds.
-Shooting within those 3 seconds resets the 3-second timer.
-You can see if you shot early by looking at your orb on screen. If you bounces up and down, you had missed a shot.
-
 After the duel has been won, the timer will display the time it took for the winner to fire their shot, after the music ended.
+
+<Aside type="tip">
+    **Be mindful of stream delay.** Typically, Twitch streams can be delayed from 1 second up to 6 seconds or more.
+    Try and estimate your delay and account for it to have a better chance at winning.
+</Aside>
+
+<Aside type="caution">
+    **If you shoot too early**, you will be on cooldown for 3 seconds.
+    Shooting within those 3 seconds resets the 3-second timer.
+    You can see if you shot early by looking at your orb on screen. If you bounces up and down, you had missed a shot.
+</Aside>
+
+<Aside type="note">
+    If you lose a duel you started, you will be prevented from starting new ones for some time.
+</Aside>
 
 ### Taking all bets
 
@@ -40,7 +55,7 @@ Amount is in [mega-vip](/giga-vip#mega-vip).
 For example, `!gamba @Red_Epicness 1640` is a bet of 1.64 [gv](/giga-vip) that [Red_Epicness](https://bahms.org/usercard/red_epicness) will win the current duel.
 
 The pot is split amongst the winners.
-Each dueler has 500 [mv](/giga-vip#mega-vip) bet on thier behalf from thin air.
+Each dueler has 500 [mv](/giga-vip#mega-vip) bet on their behalf from thin air.
 The more one bets, the bigger the share of the winnings they receive.
 
 ### Elo

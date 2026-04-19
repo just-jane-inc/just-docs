@@ -110,7 +110,7 @@ making [his animatronic Joel come to life and spin, spin, spin](https://youtu.be
 let there be justice
 
 | command                       | cost ([gv](/giga-vip/)) | description                                                                  |
-| :---------------------------- | :---------------------: | :--------------------------------------------------------------------------- |
+|:------------------------------|:-----------------------:|:-----------------------------------------------------------------------------|
 | `!duel`                       |            0            | starts a [duel](/bahms/duels/) with another user (must be as a reply)        |
 | `!gamba <@username> <amount>` |            0            | [place a bet](/bahms/duels/#taking-all-bets) on the current duel             |
 | `!bang`                       |            0            | shoots one round during your ongoing [duel](/bahms/duels/) with another user |
