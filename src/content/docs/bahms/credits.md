@@ -21,7 +21,7 @@ In the credits you can find:
 - Sub gifters
     - Everyone who has gifted an active gifted sub
 - Bits cheerers
-    - Everyone who has cheered >500 bits in the current month
+    - Everyone who has cheered >=500 bits in the current month
 
 The credits source code is published [on our GitHub](https://github.com/just-jane-inc/just-roll-credits).
 

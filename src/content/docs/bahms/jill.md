@@ -8,7 +8,7 @@ She exists to responds to both things happening on stream and in chat.
 
 You can also tell jill about yourself by whispering her. See [Whispering](#whispering) for more info.
 
-Use the `!jill-price` command to see what the current market-value price is for sending a message to jill is.
+Use the `!jill-price` command to see what the current market-value price is for sending a message to jill.
 
 ## Origin
 
