@@ -5,6 +5,7 @@ import starlight from '@astrojs/starlight';
 // https://astro.build/config
 export default defineConfig({
     base: '/',
+    site: 'https://docs.bahms.org',
     server: {
         allowedHosts: ['bahms.org', '.bahms.org', 'localhost']
     },

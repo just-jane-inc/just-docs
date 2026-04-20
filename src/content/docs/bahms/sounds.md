@@ -11,8 +11,8 @@ There is a special sound with a gigantified `justja211Zap` emote.
 
 ### Giga zap
 
-Sending `justja211Zap` as [a gigantified emote](https://help.twitch.tv/s/article/power-ups) will play zap sound at a much louder volume intended to startle
-Jane.
+Sending `justja211Zap` as [a gigantified emote](https://help.twitch.tv/s/article/power-ups) will play zap sound at a much louder volume
+intended to startle Jane.
 
 ![justja211Zap](https://static-cdn.jtvnw.net/emoticons/v2/emotesv2_77fbb4f4badd4e298a1736d2c5f034ae/default/dark/3.0)
 
@@ -47,15 +47,15 @@ These are sounds that needs to be unlocked by paying a fee.
 Currently, this is a one-time payment of [Giga VIP](/giga-vip), and you get to use the sound in perpetuity,
 but this **might change in the future** depending on sounds use.
 
-| sound    | cost ([gv](/giga-vip/)) | unlock command     |
-|----------|:-----------------------:|--------------------|
-| rain     |           25            | `!rain-maker`      |
-| thunder  |           50            | `!thunder-god`     |
-| slurp    |           50            | `!silver-slurper`  |
-| ara ara  |           50            | `!ara-ara-mommy`   |
-| uwu      |           50            | `!uwu-people`      |
-| erm      |           50            | `!ermily`          |
-| `!whip`  |           100           | `!dominatrix`      |
+| sound   | cost ([gv](/giga-vip/)) | unlock command    |
+|---------|:-----------------------:|-------------------|
+| rain    |           25            | `!rain-maker`     |
+| thunder |           50            | `!thunder-god`    |
+| slurp   |           50            | `!silver-slurper` |
+| ara ara |           50            | `!ara-ara-mommy`  |
+| uwu     |           50            | `!uwu-people`     |
+| erm     |           50            | `!ermily`         |
+| `!whip` |           100           | `!dominatrix`     |
 
 Use the `!my-titles` commands to get a list of the sounds you have unlocked.
 

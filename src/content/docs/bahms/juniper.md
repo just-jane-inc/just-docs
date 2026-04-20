@@ -3,7 +3,7 @@ title: Juniper
 description: Introduction to Juniper
 ---
 
-Juniper is a cute tamagotchi-like hedgehog.
+Juniper is a cute GachaTomi™ hedgehog.
 
 Currently, she can be [patted](/redeems/#just-juniper-pats) and
 [fed](/redeems/#just-hydrate), with future plans for deeper integrations

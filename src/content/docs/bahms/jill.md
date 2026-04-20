@@ -8,6 +8,8 @@ She exists to responds to both things happening on stream and in chat.
 
 You can also tell jill about yourself by whispering her. See [Whispering](#whispering) for more info.
 
+Use the `!jill-price` command to see what the current market-value price is for sending a message to jill.
+
 ## Origin
 
 Jill originates from Millie, the assistant on [JakeCreatesStuff](https://www.twitch.tv/jakecreatesstuff)'s streams.
@@ -34,6 +36,7 @@ You can interact with Jill both via the
 [hey jill redeem](/redeems/#just-say-hey-jill)
 or using the `!jill` command:
 
-| command       | cost ([gv](/giga-vip/)) | description   |
-|:--------------|:-----------------------:|:--------------|
-| `!jill <msg>` |            2            | Talk to jill. |
+| command       | cost ([gv](/giga-vip/)) | description            |
+|:--------------|:-----------------------:|:-----------------------|
+| `!jill <msg>` |      `!jill-price`      | Talk to jill.          |
+| `!jill-price` |            0            | Get current Jill price |
