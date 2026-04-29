@@ -2,6 +2,7 @@
 title: Jill
 description: Introduction to Jill
 ---
+import MarketPrice from "../../components/MarketPrice.astro"
 
 Jill is our lovely AI co-star.
 She exists to responds to both things happening on stream and in chat.
@@ -9,6 +10,7 @@ She exists to responds to both things happening on stream and in chat.
 You can also tell jill about yourself by whispering her. See [Whispering](#whispering) for more info.
 
 Use the `!jill-price` command to see what the current market-value price is for sending a message to jill.
+The current market price is set to <MarketPrice product="jill" unit="gv" />.
 
 ## Origin
 
@@ -36,7 +38,7 @@ You can interact with Jill both via the
 [hey jill redeem](/redeems/#just-say-hey-jill)
 or using the `!jill` command:
 
-| command       | cost ([gv](/giga-vip/)) | description            |
-|:--------------|:-----------------------:|:-----------------------|
-| `!jill <msg>` |      `!jill-price`      | Talk to jill.          |
-| `!jill-price` |            0            | Get current Jill price |
+| command       |                  cost ([gv](/giga-vip/))                  | description            |
+|:--------------|:---------------------------------------------------------:|:-----------------------|
+| `!jill <msg>` | <MarketPrice product="jill" unit="gv" showUnit={false} /> | Talk to jill.          |
+| `!jill-price` |                             0                             | Get current Jill price |

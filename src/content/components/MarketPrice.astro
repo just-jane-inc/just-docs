@@ -1,0 +1,54 @@
+---
+interface Props {
+    product: string;
+    unit?: 'gv'|'mv';
+    showUnit?: boolean;
+}
+
+const { product, unit = 'gv', showUnit = true } = Astro.props;
+---
+<>
+    <market-price title={`!${product} market price`} data-unit={unit} data-product={product}>
+        <span class="value">?</span>
+        { showUnit && <span class="unit">{ unit }</span> }
+    </market-price>
+</>
+
+<script>
+    // Fetch the price during runtime, not during build time.
+    const response = await fetch('https://api.bahms.org/v1/price');
+    const catalog = await response.json();
+
+    if (typeof catalog !== 'object') {
+        console.error('Failed to fetch BAHMS catalog.');
+    }
+
+    class MarketPrice extends HTMLElement {
+        connectedCallback() {
+            const { unit, product } = this.dataset;
+            const el = this.querySelector('.value');
+            if (!el) {
+                console.error('Could not find element to update market price value.');
+                return;
+            }
+
+            if (!(product in catalog)) {
+                console.error(`Could not find product "${product}" in catalog.`);
+                return;
+            }
+
+            const price = catalog[product];
+
+            if (!(unit in price)) {
+                console.error(`Could not find unit "${unit}" in product price.`);
+                return;
+            }
+
+            el.innerHTML = price[unit];
+        }
+    }
+
+    if (typeof catalog === 'object') {
+        customElements.define('market-price', MarketPrice);
+    }
+</script>
