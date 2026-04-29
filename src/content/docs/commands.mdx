@@ -2,6 +2,7 @@
 title: Commands
 description: Introduction to commands
 ---
+import MarketPrice from "../components/MarketPrice.astro"
 
 commands are prefixed with either `!` or `bang `.
 the `--help` flag can be used to get additional information about commands.
@@ -67,10 +68,10 @@ single time purchase of a title that is used to unlock other commands or feature
 
 our lovely [AI co-star, Jill](/bahms/jill/)
 
-| command       | cost ([gv](/giga-vip/)) | description                                     |
-|:--------------|:-----------------------:|:------------------------------------------------|
-| `!jill <msg>` |      market value       | send a message to Jill, she will always respond |
-| `!jill-price` |            0            | get current Jill price                          |
+| command       |                  cost ([gv](/giga-vip/))                  | description                                     |
+|:--------------|:---------------------------------------------------------:|:------------------------------------------------|
+| `!jill <msg>` | <MarketPrice product="jill" unit="gv" showUnit={false} /> | send a message to Jill, she will always respond |
+| `!jill-price` |                             0                             | get current Jill price                          |
 
 Jill loves to learn about you by [whispering](/bahms/jill/#whispering) commands.
 
@@ -78,11 +79,11 @@ Jill loves to learn about you by [whispering](/bahms/jill/#whispering) commands.
 
 join the voices in my head
 
-| command              | cost ([gv](/giga-vip/)) | description                                       |
-|:---------------------|:-----------------------:|:--------------------------------------------------|
-| `!tts [voice] <msg>` |      market value       | use [tts](/bahms/tts/)                            |
-| `!tts-price`         |            0            | prints the current market-value price of tts      |
-| `!my-voice <voice>`  |            0            | sets your default [tts voice](/bahms/tts/#voices) |
+| command              |                 cost ([gv](/giga-vip/))                  | description                                       |
+|:---------------------|:--------------------------------------------------------:|:--------------------------------------------------|
+| `!tts [voice] <msg>` | <MarketPrice product="tts" unit="gv" showUnit={false} /> | use [tts](/bahms/tts/)                            |
+| `!tts-price`         |                            0                             | prints the current market-value price of tts      |
+| `!my-voice <voice>`  |                            0                             | sets your default [tts voice](/bahms/tts/#voices) |
 
 ## bounce house
 
