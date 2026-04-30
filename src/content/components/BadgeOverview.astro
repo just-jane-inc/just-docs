@@ -1,0 +1,78 @@
+<badge-list />
+
+<script>
+    // Fetch the badges during runtime, not during build time.
+    const response = await fetch('https://api.bahms.org/v1/badges/');
+    const badges = await response.json();
+
+    if (typeof badges !== 'object') {
+        console.error('Could not load badges from API endpoint');
+    }
+
+    class BadgeList extends HTMLElement {
+        connectedCallback() {
+            for (const badge of badges) {
+                // Destructure the badge data.
+                const { description, 'img-base64': imgData } = badge;
+
+                // Create new HTML nodes for the current badge.
+                const figure = document.createElement('figure');
+                const image = document.createElement('img');
+                const caption = document.createElement('figcaption');
+
+                // Set the badge information on the new HTML elements.
+                image.src = `data:;base64,${imgData}`;
+                caption.innerText = description;
+
+                /**
+                 * Append the HTML to the DOM.
+                 *
+                 *     <badge-list>
+                 *       <figure>
+                 *         <img />
+                 *         <figcaption />
+                 *       </figure>
+                 *     </badge-list>
+                 */
+                figure.appendChild(image);
+                figure.appendChild(caption);
+                this.appendChild(figure);
+            }
+        }
+    }
+
+    // Register the custom component if we have an expected response from the API.
+    if (typeof badges === 'object') {
+        customElements.define('badge-list', BadgeList);
+    }
+</script>
+
+<style>
+    badge-list {
+        display: block;
+        padding: 2em;
+
+        /* Make sure the page doesn't jump too after processing the API response. */
+        min-height: 544px;
+
+        /* Room between figures. */
+        figure + figure {
+            margin-top: 1.4em;
+            padding-top: 1.4em;
+            border-top: 1px solid var(--sl-color-text);
+        }
+
+        /* Figure styling */
+        figure {
+            /* Put the image and text on the same line */
+            figcaption, img {
+                display: inline;
+            }
+
+            /* Add some room between the image and text */
+            img + figcaption {
+                margin-left: 1em;
+            }
+        }
+    }
+</style>
