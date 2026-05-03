@@ -59,6 +59,9 @@
             // Create a unique ID for the current badge definition.
             this.id = `badge-${name.replaceAll('_', '-')}`;
 
+            // Create a title using the name of the badge.
+            this.title = createBadgeTitle(name);
+
             // Create new HTML nodes for the current badge.
             const term = document.createElement('dt');
             const definition = document.createElement('dd');
@@ -66,10 +69,7 @@
 
             // Create an anchor that links to the current badge definition.
             anchor.href = `#${this.id}`;
-            anchor.innerText = createBadgeTitle(name);
-
-            // Inherit the anchor text as the title of the badge definition.
-            this.title = anchor.innerText;
+            anchor.innerText = this.title;
 
             // Set the basic structure.
             term.append(anchor);
@@ -81,7 +81,7 @@
                 term.prepend(image);
 
                 image.src = icon;
-                image.alt = anchor.innerText;
+                image.alt = this.title;
             }
 
             this.append(term);
