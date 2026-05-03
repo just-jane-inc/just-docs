@@ -5,11 +5,19 @@ attribution: >-
   The Moon avatar is a free to use image found here:
   https://unsplash.com/illustrations/a-cartoon-moon-with-eyes-and-a-smile-hAeSihY4ajE
 ---
-import {Steps} from "@astrojs/starlight/components";
+import {Aside, LinkButton, Steps} from "@astrojs/starlight/components";
 import BadgeOverview from "../components/BadgeOverview.astro";
 
 You can see your own usercard at https://bahms.org/usercard/.
 Anyone may look up anyone's usercard.
+
+<Aside type="tip">
+    User cards can be viewed without logging in.
+    Logging in with your Twitch account will allow you to configure settings
+    specific to you.
+
+    <LinkButton icon="setting" iconPlacement="start" href="#duel-summary">Opt out of duels</LinkButton>
+</Aside>
 
 ## Profile
 
@@ -42,6 +50,15 @@ The following badges are available:
 
 The duel summary card will show your wins and losses in [duels](/bahms/duels/),
 as well as your [ELO](/bahms/duels/#elo).
+
+<Aside type="note">
+    When logged in using Twitch, you can change whether you will allow someone
+    to start a duel against you.
+
+    ![Allow duel?](../../assets/usercard-duels-allow.png)
+
+    This change is persisted immediately after checking or unchecking the box.
+</Aside>
 
 ## Titles
 
