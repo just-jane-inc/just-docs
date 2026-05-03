@@ -97,7 +97,10 @@
                 const definition = document.createElement('badge-definition');
                 definition.dataset.name = name;
                 definition.dataset.description = description;
-                definition.dataset.icon = `data:;base64,${imgData}`;
+
+                if (imgData) {
+                    definition.dataset.icon = `data:;base64,${imgData}`;
+                }
 
                 dl.append(definition);
             }
