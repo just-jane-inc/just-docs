@@ -11,18 +11,19 @@
 
     class BadgeList extends HTMLElement {
         connectedCallback() {
-            for (const badge of badges) {
-                // Destructure the badge data.
-                const { description, 'img-base64': imgData } = badge;
-
+            for (const { name, description, 'img-base64': imgData } of badges) {
                 // Create new HTML nodes for the current badge.
                 const figure = document.createElement('figure');
                 const image = document.createElement('img');
                 const caption = document.createElement('figcaption');
+                const em = document.createElement('em');
 
                 // Set the badge information on the new HTML elements.
                 image.src = `data:;base64,${imgData}`;
+                image.alt = name;
+                em.innerText = name;
                 caption.innerText = description;
+                caption.prepend(em);
 
                 /**
                  * Append the HTML to the DOM.
@@ -30,7 +31,10 @@
                  *     <badge-list>
                  *       <figure>
                  *         <img />
-                 *         <figcaption />
+                 *         <figcaption>
+                 *           <em />
+                 *           ...
+                 *         </figcaption>
                  *       </figure>
                  *     </badge-list>
                  */
@@ -67,6 +71,14 @@
             /* Put the image and text on the same line */
             figcaption, img {
                 display: inline;
+            }
+
+            /* Style the name of the badge */
+            figcaption {
+                em {
+                    margin-right: 1em;
+                    color: color(from var(--sl-color-text) srgb r g b / 0.8);
+                }
             }
 
             /* Add some room between the image and text */
