@@ -1,4 +1,4 @@
-<badge-list />
+<badge-definition-list />
 
 <script>
     // Fetch the badges during runtime, not during build time.
@@ -9,81 +9,150 @@
         console.error('Could not load badges from API endpoint');
     }
 
-    class BadgeList extends HTMLElement {
-        connectedCallback() {
-            for (const { name, description, 'img-base64': imgData } of badges) {
-                // Create new HTML nodes for the current badge.
-                const figure = document.createElement('figure');
-                const image = document.createElement('img');
-                const caption = document.createElement('figcaption');
-                const em = document.createElement('em');
+    const decimalFormatter = new Intl.NumberFormat('en-US', { style: 'decimal' });
 
-                // Set the badge information on the new HTML elements.
-                image.src = `data:;base64,${imgData}`;
-                image.alt = name;
-                em.innerText = name;
-                caption.innerText = description;
+    /**
+     * Convert a badge name into a human-readable badge title.
+     * For the following input:
+     *
+     *     8192_bag_holder
+     *
+     * It produces this output:
+     *
+     *     8,192 Bag holder
+     */
+    const createBadgeTitle = (name: string): string => {
+        let numWordParts = 0;
+        const isDecimal = /^\d+$/;
+        let result = [];
 
-                /**
-                 * Append the HTML to the DOM.
-                 *
-                 *     <badge-list>
-                 *       <figure>
-                 *         <img />
-                 *         <figcaption>
-                 *           <em />
-                 *           ...
-                 *         </figcaption>
-                 *       </figure>
-                 *     </badge-list>
-                 */
-                caption.prepend(em);
-                figure.append(image);
-                figure.append(caption);
-                this.append(figure);
+        for (const part of name.split('_')) {
+            if (isDecimal.test(part)) {
+                result.push(decimalFormatter.format(part));
+                continue;
             }
+
+            if (numWordParts++ === 0) {
+                const capital = part.substring(0, 1).toUpperCase();
+                result.push(`${capital}${part.substring(1)}`);
+                continue;
+            }
+
+            result.push(part);
+        }
+
+        return result.join(' ');
+    }
+
+    class BadgeDefinition extends HTMLElement {
+        connectedCallback() {
+            const { name, description, icon } = this.dataset;
+
+            if (!name) {
+                throw new Error('Could not load badge name');
+            }
+
+            if (!description) {
+                throw new Error('Could not load badge description');
+            }
+
+            // Create a unique ID for the current badge definition.
+            this.id = `badge-${name.replaceAll('_', '-')}`;
+
+            // Create a title using the name of the badge.
+            this.title = createBadgeTitle(name);
+
+            // Create new HTML nodes for the current badge.
+            const term = document.createElement('dt');
+            const definition = document.createElement('dd');
+            const anchor = document.createElement('a');
+
+            // Create an anchor that links to the current badge definition.
+            anchor.href = `#${this.id}`;
+            anchor.innerText = this.title;
+
+            // Set the basic structure.
+            term.append(anchor);
+            definition.innerText = description;
+
+            // Add an icon image.
+            if (icon) {
+                const image = document.createElement('img');
+                term.prepend(image);
+
+                image.src = icon;
+                image.alt = this.title;
+            }
+
+            this.append(term);
+            this.append(definition);
+        }
+    }
+
+    class BadgeDefinitionList extends HTMLElement {
+        connectedCallback() {
+            const dl = document.createElement('dl');
+
+            for (const { name, description, 'img-base64': imgData } of badges) {
+                const definition = document.createElement('badge-definition');
+                definition.dataset.name = name;
+                definition.dataset.description = description;
+
+                if (imgData) {
+                    definition.dataset.icon = `data:;base64,${imgData}`;
+                }
+
+                dl.append(definition);
+            }
+
+            // Reset the list.
+            this.innerHTML = '';
+            this.append(dl);
         }
     }
 
     // Register the custom component if we have an expected response from the API.
     if (typeof badges === 'object') {
-        customElements.define('badge-list', BadgeList);
+        customElements.define('badge-definition', BadgeDefinition);
+        customElements.define('badge-definition-list', BadgeDefinitionList);
     }
 </script>
 
 <style>
-    badge-list {
+    badge-definition-list {
         display: block;
         padding: 2em;
 
-        /* Make sure the page doesn't jump too after processing the API response. */
-        min-height: 544px;
-
-        /* Room between figures. */
-        figure + figure {
+        /* Room between badges. */
+        badge-definition + badge-definition {
+            display: block;
             margin-top: 1.4em;
             padding-top: 1.4em;
             border-top: 1px solid var(--sl-color-text);
         }
 
-        /* Figure styling */
-        figure {
+        /* Definition styling */
+        badge-definition {
             /* Put the image and text on the same line */
-            figcaption, img {
-                display: inline;
-            }
+            dt {
+                font-size: 1.1em;
+                line-height: 1em;
 
-            /* Style the name of the badge */
-            figcaption {
-                em {
-                    margin-right: 1em;
-                    color: color(from var(--sl-color-text) srgb r g b / 0.8);
+                a {
+                    color: var(--sl-color-text);
+                }
+
+                img {
+                    display: inline;
+                    margin-right: 0.5em;
+                    height: 1em;
+                    width: 1em;
                 }
             }
 
-            /* Add some room between the image and text */
-            img + figcaption {
-                margin-left: 1em;
+            dd {
+                padding-block-start: 0.6em;
+                padding-inline-start: 0;
             }
         }
     }
