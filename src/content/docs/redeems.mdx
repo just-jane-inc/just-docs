@@ -13,7 +13,9 @@ Chat redeems can be paid by using
 [channel points](https://help.twitch.tv/s/article/channel-points-faq#viewer).
 Here is an overview of all the redeems and their cost in channel points.
 
-<CardGrid>{redeems.map((redeem) => <RedeemCard {...redeem} />)}</CardGrid>
+<CardGrid stagger={redeems.length % 2 === 1}>{redeems.map(
+    (redeem) => <RedeemCard {...redeem} />
+)}</CardGrid>
 
 ## On the clock
 
