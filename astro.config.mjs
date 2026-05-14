@@ -35,6 +35,7 @@ export default defineConfig({
                         {label: 'Sounds', slug: 'bahms/sounds'},
                         {label: 'TTS', slug: 'bahms/tts'},
                         {label: 'Duels', slug: 'bahms/duels'},
+                        {label: 'Fishing', slug: 'bahms/fishing'},
                         {label: 'Slot Machine', slug: 'bahms/slot-machine'},
                         {label: 'Bounce House', slug: 'bahms/bounce-house'},
                         {label: 'Juniper', slug: 'bahms/juniper'},
