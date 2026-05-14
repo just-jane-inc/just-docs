@@ -139,6 +139,13 @@ export const redeems: RedeemProps[] = [
         channelPoints: '1,024'
     },
     {
+        title: 'Just Stay Positive',
+        anchor: '#just-stay-positive',
+        iconBackgroundColor: 'rgb(192, 202, 245)',
+        iconUrl: defaultIcon,
+        channelPoints: '2,048'
+    },
+    {
         title: 'Just Bark',
         anchor: '#just-bark',
         iconBackgroundColor: 'rgb(192, 202, 245)',
@@ -165,5 +172,12 @@ export const redeems: RedeemProps[] = [
         iconBackgroundColor: 'rgb(128, 218, 215)',
         iconUrl: redeemIcon('e5c0380c-2afd-4796-8296-d7212b2f2144/4bd25155-737e-4abc-8c96-a4fbc8861b4d'),
         channelPoints: '32,768'
+    },
+    {
+        title: 'Just Unit Test',
+        anchor: '#just-unit-test',
+        iconBackgroundColor: 'rgb(192, 202, 245)',
+        iconUrl: redeemIcon('fa193225-0f67-403a-974a-1eac1a2d4d96/e5c98bdd-c628-4d4c-b1b8-f6f1e653b170'),
+        channelPoints: '131,072'
     },
 ]
