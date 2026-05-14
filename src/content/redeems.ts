@@ -6,7 +6,7 @@ type RedeemProps = ComponentProps<typeof RedeemCard>;
 // Helpers to make manually configured icon URLs easier to read.
 const broadcasterId = '1112386096';
 const iconBaseUrl = 'https://static-cdn.jtvnw.net/custom-reward-images'
-// const defaultIcon = new URL(`${iconBaseUrl}/default-2.png`)
+const defaultIcon = new URL(`${iconBaseUrl}/default-2.png`)
 const icons: Record<'1x'|'2x', string> = {
     '1x': 'custom-2.png',
     '2x': 'custom-4.png'
@@ -19,6 +19,13 @@ const redeemIcon = (
 
 // @todo Let this list be populated by the Twitch API.
 export const redeems: RedeemProps[] = [
+    {
+        title: 'Test Rod LVL 1',
+        anchor: '#test-rod-lvl-1',
+        iconBackgroundColor: 'rgb(189, 0, 120)',
+        iconUrl: defaultIcon,
+        channelPoints: 1
+    },
     {
         title: 'Just Pyramid Scheme',
         anchor: '#just-pyramid-scheme',
