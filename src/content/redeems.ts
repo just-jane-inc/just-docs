@@ -6,7 +6,7 @@ type RedeemProps = ComponentProps<typeof RedeemCard>;
 // Helpers to make manually configured icon URLs easier to read.
 const broadcasterId = '1112386096';
 const iconBaseUrl = 'https://static-cdn.jtvnw.net/custom-reward-images'
-// const defaultIcon = new URL(`${iconBaseUrl}/default-2.png`)
+const defaultIcon = new URL(`${iconBaseUrl}/default-2.png`)
 const icons: Record<'1x'|'2x', string> = {
     '1x': 'custom-2.png',
     '2x': 'custom-4.png'
@@ -19,6 +19,13 @@ const redeemIcon = (
 
 // @todo Let this list be populated by the Twitch API.
 export const redeems: RedeemProps[] = [
+    {
+        title: 'Test Rod LVL 1',
+        anchor: '#test-rod-lvl-1',
+        iconBackgroundColor: 'rgb(189, 0, 120)',
+        iconUrl: defaultIcon,
+        channelPoints: 1
+    },
     {
         title: 'Just Pyramid Scheme',
         anchor: '#just-pyramid-scheme',
@@ -132,6 +139,13 @@ export const redeems: RedeemProps[] = [
         channelPoints: '1,024'
     },
     {
+        title: 'Just Stay Positive',
+        anchor: '#just-stay-positive',
+        iconBackgroundColor: 'rgb(192, 202, 245)',
+        iconUrl: defaultIcon,
+        channelPoints: '2,048'
+    },
+    {
         title: 'Just Bark',
         anchor: '#just-bark',
         iconBackgroundColor: 'rgb(192, 202, 245)',
@@ -158,5 +172,12 @@ export const redeems: RedeemProps[] = [
         iconBackgroundColor: 'rgb(128, 218, 215)',
         iconUrl: redeemIcon('e5c0380c-2afd-4796-8296-d7212b2f2144/4bd25155-737e-4abc-8c96-a4fbc8861b4d'),
         channelPoints: '32,768'
+    },
+    {
+        title: 'Just Unit Test',
+        anchor: '#just-unit-test',
+        iconBackgroundColor: 'rgb(192, 202, 245)',
+        iconUrl: redeemIcon('fa193225-0f67-403a-974a-1eac1a2d4d96/e5c98bdd-c628-4d4c-b1b8-f6f1e653b170'),
+        channelPoints: '131,072'
     },
 ]

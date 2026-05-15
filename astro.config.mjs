@@ -35,6 +35,7 @@ export default defineConfig({
                         {label: 'Sounds', slug: 'bahms/sounds'},
                         {label: 'TTS', slug: 'bahms/tts'},
                         {label: 'Duels', slug: 'bahms/duels'},
+                        {label: 'Fishing', slug: 'bahms/fishing'},
                         {label: 'Slot Machine', slug: 'bahms/slot-machine'},
                         {label: 'Bounce House', slug: 'bahms/bounce-house'},
                         {label: 'Juniper', slug: 'bahms/juniper'},
@@ -44,6 +45,12 @@ export default defineConfig({
                 {label: 'Commands', slug: 'commands'},
                 {label: 'Redeems', slug: 'redeems'},
                 {label: 'Usercard', slug: 'usercard'},
+                {
+                    label: 'API documentation',
+                    link: 'https://api.bahms.org',
+                    // Open in a separate tab / window.
+                    attrs: { target: '_blank' }
+                },
             ],
         }),
     ],
