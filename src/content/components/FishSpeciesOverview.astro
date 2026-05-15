@@ -1,0 +1,152 @@
+<fish-species-table />
+
+<script>
+    // Fetch the fish species during runtime, not during build time.
+    const response = await fetch('https://api.bahms.org/v1/fishing/fish');
+    const fishSpecies = await response.json();
+
+    if (typeof fishSpecies !== 'object') {
+        console.error('Could not load fish species from API endpoint');
+    }
+
+    const environments = {
+        SALTWATER: 'salt water',
+        FRESHWATER: 'fresh water',
+    }
+
+    const rarityLevels = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY'];
+    const createRarityMeter = (rarity) => {
+        const meter = document.createElement('meter');
+        meter.title = rarity.toLowerCase();
+        meter.min = 0;
+        meter.max = rarityLevels.length - 1;
+        meter.low = 1;
+        meter.high = rarityLevels.length - 2;
+        meter.optimum = Math.ceil((rarityLevels.length - 1) / 2);
+        meter.value = rarityLevels.findIndex((candidate) => candidate === rarity) ?? 0;
+        return meter;
+    }
+
+    class FishSpeciesList extends HTMLElement {
+        connectedCallback() {
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+
+            thead.innerHTML = '<tr><th colspan="2">Fish</th><th>Rarity</th><th>Environment</th></tr>';
+
+            for (const { id, name, rarity, environment, 'img-base64': imgData } of fishSpecies) {
+                const record = document.createElement('tr');
+                record.id = `fish-${id}`;
+
+                // Create new HTML nodes for the current fish species.
+                const iconCell = document.createElement('td');
+                const fishCell = document.createElement('td');
+                const rarityCell = document.createElement('td');
+                const environmentCell = document.createElement('td');
+                const anchor = document.createElement('a');
+
+                // Add an icon image.
+                const image = document.createElement('img');
+                image.src = `data:;base64,${imgData}`;
+                image.alt = name;
+                iconCell.append(image);
+
+                // Create an anchor that links to the current badge definition.
+                anchor.href = `#${record.id}`;
+                anchor.innerText = name;
+                fishCell.title = name;
+
+                // Set the basic structure.
+                fishCell.append(anchor);
+                environmentCell.innerText = (environments[environment] ?? environment).toLowerCase();
+
+                rarityCell.innerText = rarity.toLowerCase();
+                rarityCell.prepend(createRarityMeter(rarity));
+
+                record.append(iconCell);
+                record.append(fishCell);
+                record.append(rarityCell);
+                record.append(environmentCell);
+                tbody.append(record);
+            }
+
+            // Reset the list.
+            this.innerHTML = '';
+
+            if (fishSpecies.length > 0) {
+                table.append(thead);
+                table.append(tbody);
+                this.append(table);
+            }
+        }
+    }
+
+    if (typeof fishSpecies === 'object') {
+        customElements.define('fish-species-table', FishSpeciesList);
+    }
+</script>
+
+<style>
+    fish-species-table {
+        display: block;
+        margin-block-start: 1em;
+
+        meter {
+            --background: color(from var(--sl-color-bg-accent) srgb r g b / 0.1);
+            --optimum: var(--sl-color-accent-high);
+            --sub-optimum: var(--sl-color-accent);
+            --sub-sub-optimum: var(--sl-color-accent-low);
+            --height: 16px;
+            --width: 84px;
+            --background-size: 17px 16px;
+
+            position: relative;
+            height: var(--height);
+            width: var(--width);
+
+            display: inline-block;
+            margin-inline-end: 1em;
+
+            /* The gray background in Firefox */
+            background: var(--background);
+        }
+
+        /* The gray background in Chrome, etc. */
+        meter::-webkit-meter-bar {
+            background: var(--background);
+            height: var(--height);
+        }
+
+        /* The green (optimum) bar in Firefox */
+        meter:-moz-meter-optimum::-moz-meter-bar {
+            background: var(--optimum);
+            height: var(--height);
+        }
+
+        /* The green (optimum) bar in Chrome etc. */
+        meter::-webkit-meter-optimum-value {
+            background: var(--optimum);
+        }
+
+        /* The yellow (sub-optimum) bar in Firefox */
+        meter:-moz-meter-sub-optimum::-moz-meter-bar {
+            background: var(--sub-optimum);
+        }
+
+        /* The yellow (sub-optimum) bar in Chrome etc. */
+        meter::-webkit-meter-suboptimum-value {
+            background: var(--sub-optimum);
+        }
+
+        /* The red (even less good) bar in Firefox */
+        meter:-moz-meter-sub-sub-optimum::-moz-meter-bar {
+            background: var(--sub-sub-optimum);
+        }
+
+        /* The red (even less good) bar in Chrome etc. */
+        meter::-webkit-meter-even-less-good-value {
+            background: var(--sub-sub-optimum);
+        }
+    }
+</style>
