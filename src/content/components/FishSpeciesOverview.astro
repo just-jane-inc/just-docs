@@ -1,9 +1,18 @@
 <fish-species-table />
 
 <script>
+    const rarityLevels = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY'];
+    const getRarityLevel = (rarity) => {
+        return rarityLevels.findIndex((candidate) => candidate === rarity) ?? 0;
+    }
+
     // Fetch the fish species during runtime, not during build time.
     const response = await fetch('https://api.bahms.org/v1/fishing/fish');
-    const fishSpecies = await response.json();
+    const fishSpecies = (await response.json()).sort((a, b) =>
+        a.rarity === b.rarity
+            ? a.name.localeCompare(b.name)
+            : getRarityLevel(a.rarity) - getRarityLevel(b.rarity)
+    );
 
     if (typeof fishSpecies !== 'object') {
         console.error('Could not load fish species from API endpoint');
@@ -14,7 +23,6 @@
         FRESHWATER: 'fresh water',
     }
 
-    const rarityLevels = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY'];
     const createRarityMeter = (rarity) => {
         const meter = document.createElement('meter');
         meter.title = rarity.toLowerCase();
@@ -23,7 +31,7 @@
         meter.low = 1;
         meter.high = rarityLevels.length - 2;
         meter.optimum = Math.ceil((rarityLevels.length - 1) / 2);
-        meter.value = rarityLevels.findIndex((candidate) => candidate === rarity) ?? 0;
+        meter.value = getRarityLevel(rarity);
         return meter;
     }
 
