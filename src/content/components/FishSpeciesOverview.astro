@@ -1,4 +1,15 @@
-<fish-species-table />
+<fish-species-table>
+    <table>
+        <thead>
+            <tr>
+                <th colspan="2">Fish</th>
+                <th>Rarity</th>
+                <th>Environment</th>
+            </tr>
+        </thead>
+        <tbody />
+    </table>
+</fish-species-table>
 
 <script>
     const rarityLevels = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY'];
@@ -37,11 +48,14 @@
 
     class FishSpeciesList extends HTMLElement {
         connectedCallback() {
-            const table = document.createElement('table');
-            const thead = document.createElement('thead');
-            const tbody = document.createElement('tbody');
+            const tbody = this.querySelector('table tbody');
 
-            thead.innerHTML = '<tr><th colspan="2">Fish</th><th>Rarity</th><th>Environment</th></tr>';
+            if (!tbody) {
+                throw new Error('Could not render Fish Species List without table body');
+            }
+
+            // Reset the table.
+            tbody.innerHTML = '';
 
             for (const { id, name, rarity, environment, 'img-base64': imgData } of fishSpecies) {
                 const record = document.createElement('tr');
@@ -77,15 +91,6 @@
                 record.append(rarityCell);
                 record.append(environmentCell);
                 tbody.append(record);
-            }
-
-            // Reset the list.
-            this.innerHTML = '';
-
-            if (fishSpecies.length > 0) {
-                table.append(thead);
-                table.append(tbody);
-                this.append(table);
             }
         }
     }
