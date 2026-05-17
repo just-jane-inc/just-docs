@@ -3,6 +3,7 @@ title: Fishing game
 description: Introduction to fishing
 ---
 import {Aside, LinkButton, Steps} from "@astrojs/starlight/components";
+import Dot from "../../components/Dot.astro";
 import FishSpeciesOverview from "../../components/FishSpeciesOverview.astro";
 
 a cat girl needs her fish snack - nya
@@ -61,9 +62,14 @@ The following fish species can be caught.
 
 ## Rods
 
-<Aside type="note">
-    **WIP**: This will show a list of all fishing rods that can be acquired.
-</Aside>
+![Spritesheet template for the original spaceship](../../../assets/fishing-rod-example.png "Spritesheet template for the original spaceship")
+
+After purchasing a rod, the one you get will be revealed on screen. Some rods are better than others. Rods have several attributes that are randomly assigned.
+
+**Rarity:** Rods can be common, uncommon, rare, epic, and legendary. Rarity gives an attribute bonus to hook, lure and line.  
+<Dot color="#E62937"/> **Hook:** The higher the value, the more likely you'll hook a speedy fish.  
+<Dot color="#FDF900"/> **Lure:** The higher the value, the more likely you'll lure a cunning fish.  
+<Dot color="#DEADFF"/> **Line:** The higher the value, the more stamina a fish will lose each round.  
 
 ## Lures
 
