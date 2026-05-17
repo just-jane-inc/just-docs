@@ -1,13 +1,25 @@
-<fish-species-table>
+---
+interface Props {
+    environment: 'SALTWATER'|'FRESHWATER'|'ABYSS';
+}
+
+const { environment } = Astro.props;
+---
+<fish-species-table data-environment={environment}>
+    <slot />
     <table>
         <thead>
             <tr>
                 <th colspan="2">Fish</th>
                 <th>Rarity</th>
-                <th>Environment</th>
             </tr>
         </thead>
         <tbody />
+        <tfoot>
+            <tr>
+                <td colspan="3"># fish species: <output /></td>
+            </tr>
+        </tfoot>
     </table>
 </fish-species-table>
 
@@ -38,17 +50,19 @@
         const meter = document.createElement('meter');
         meter.title = rarity.toLowerCase();
         meter.min = 0;
+        meter.low = meter.min + 1;
         meter.max = rarityLevels.length - 1;
-        meter.low = 1;
-        meter.high = rarityLevels.length - 2;
-        meter.optimum = Math.ceil((rarityLevels.length - 1) / 2);
+        meter.high = meter.max - 1;
+        meter.optimum = meter.high - 1;
         meter.value = getRarityLevel(rarity);
         return meter;
     }
 
     class FishSpeciesList extends HTMLElement {
         connectedCallback() {
+            const { environment } = this.dataset;
             const tbody = this.querySelector('table tbody');
+            const output = this.querySelector('table tfoot output') as HTMLOutputElement;
 
             if (!tbody) {
                 throw new Error('Could not render Fish Species List without table body');
@@ -57,7 +71,13 @@
             // Reset the table.
             tbody.innerHTML = '';
 
-            for (const { id, name, rarity, environment, 'img-base64': imgData } of fishSpecies) {
+            // Select the fish species that live in the current environment.
+            const species = fishSpecies.filter(
+                ({environment: candidate}) => candidate === environment,
+            );
+            output.value = `${species.length}`;
+
+            for (const { id, name, rarity, 'img-base64': imgData } of species) {
                 const record = document.createElement('tr');
                 record.id = `fish-${id}`;
 
@@ -65,7 +85,6 @@
                 const iconCell = document.createElement('td');
                 const fishCell = document.createElement('td');
                 const rarityCell = document.createElement('td');
-                const environmentCell = document.createElement('td');
                 const anchor = document.createElement('a');
 
                 // Add an icon image.
@@ -81,15 +100,15 @@
 
                 // Set the basic structure.
                 fishCell.append(anchor);
-                environmentCell.innerText = (environments[environment] ?? environment).toLowerCase();
 
-                rarityCell.innerText = rarity.toLowerCase();
-                rarityCell.prepend(createRarityMeter(rarity));
+                const rarityLabel = document.createElement('span');
+                rarityLabel.innerText = rarity.toLowerCase();
+                rarityCell.append(rarityLabel);
+                rarityCell.append(createRarityMeter(rarity));
 
                 record.append(iconCell);
                 record.append(fishCell);
                 record.append(rarityCell);
-                record.append(environmentCell);
                 tbody.append(record);
             }
         }
@@ -103,8 +122,44 @@
 <style>
     fish-species-table {
         display: block;
-        margin-block-start: 1em;
+        margin-block-start: 2em;
         margin-block-end: 2em;
+
+        table {
+            width: 100%;
+            display: table;
+
+            thead th:last-child, tbody td:last-child {
+                width: 100px;
+                text-align: center;
+            }
+
+            tbody {
+                td:first-child {
+                    width: 1px;
+                }
+
+                td {
+                    position: relative;
+
+                    span {
+                        display: inline-block;
+                        position: absolute;
+                        right: 0;
+                        width: 100px;
+                        text-align: center;
+                        z-index: 1;
+                        font-size: 0.8em;
+                        line-height: 2.2em;
+                    }
+
+                    meter {
+                        z-index: 0;
+                        opacity: 0.3;
+                    }
+                }
+            }
+        }
 
         img {
             /* Resets starlight styling */
@@ -117,7 +172,7 @@
             --sub-optimum: var(--sl-color-accent);
             --sub-sub-optimum: var(--sl-color-accent-low);
             --height: 16px;
-            --width: 84px;
+            --width: 100px;
             --background-size: 17px 16px;
 
             position: relative;
@@ -125,7 +180,6 @@
             width: var(--width);
 
             display: inline-block;
-            margin-inline-end: 1em;
 
             /* The gray background in Firefox */
             background: var(--background);
