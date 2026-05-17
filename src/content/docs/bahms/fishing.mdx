@@ -3,7 +3,7 @@ title: Fishing game
 description: Introduction to fishing
 ---
 import {Aside, LinkButton, Steps} from "@astrojs/starlight/components";
-import Dot from "../../components/Dot.astro";
+import MiddleDot from "../../components/MiddleDot.astro";
 import FishSpeciesOverview from "../../components/FishSpeciesOverview.astro";
 
 a cat girl needs her fish snack - nya
@@ -83,14 +83,18 @@ The following fish species can be caught.
 
 ## Rods
 
-![Spritesheet template for the original spaceship](../../../assets/fishing-rod-example.png "Spritesheet template for the original spaceship")
+![Fishing rod example](../../../assets/fishing-rod-example.png "Example of a freshly crafted uncommon fishing rod with 12 hook, 15 lure and 17 line")
 
-After purchasing a rod, the one you get will be revealed on screen. Some rods are better than others. Rods have several attributes that are randomly assigned.
+After purchasing a rod, it will be revealed on screen.
+Some rods are better than others.
+Rods have several attributes that are randomly assigned.
+The example above shows a freshly crafted uncommon fishing rod with 12 hook, 15 lure and 17 line.  
 
-**Rarity:** Rods can be common, uncommon, rare, epic, and legendary. Rarity gives an attribute bonus to hook, lure and line.  
-<Dot color="#E62937"/> **Hook:** The higher the value, the more likely you'll hook a speedy fish.  
-<Dot color="#FDF900"/> **Lure:** The higher the value, the more likely you'll lure a cunning fish.  
-<Dot color="#DEADFF"/> **Line:** The higher the value, the more stamina a fish will lose each round.  
+<MiddleDot /> **Rarity:** Rods can be common, uncommon, rare, epic, or legendary.
+Rarity gives an attribute bonus to hook, lure and line.  
+<MiddleDot color="#E62937"/> **Hook:** How likely you'll hook a speedy fish.  
+<MiddleDot color="#FDF900"/> **Lure:** How likely you'll lure a cunning fish.  
+<MiddleDot color="#DEADFF"/> **Line:** How easily a fish will lose stamina.  
 
 ## Lures
 

@@ -1,0 +1,22 @@
+---
+interface Props {
+    color: string;
+}
+
+const { color = 'var(--sl-color-text-accent)' } = Astro.props;
+---
+
+<span aria-hidden="true" />
+<style define:vars={{ color }}>
+    span {
+        --diameter: 0.7em;
+        display: inline-block;
+        width: var(--diameter);
+        height: var(--diameter);
+        border-radius: 50%;
+        vertical-align: middle;
+        margin-inline: 0.15em;
+        background-color: var(--color);
+        border: 0.1em solid var(--sl-color-text);
+    }
+</style>
