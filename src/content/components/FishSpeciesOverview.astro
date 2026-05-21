@@ -24,6 +24,8 @@ const { environment } = Astro.props;
 </fish-species-table>
 
 <script>
+    import { scrollToUrlFragment } from "../viewport.ts";
+
     const rarityLevels = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY'];
     const getRarityLevel = (rarity) => rarityLevels.findIndex(
         (candidate) => candidate === rarity
@@ -39,11 +41,6 @@ const { environment } = Astro.props;
 
     if (typeof fishSpecies !== 'object') {
         console.error('Could not load fish species from API endpoint');
-    }
-
-    const environments = {
-        SALTWATER: 'salt water',
-        FRESHWATER: 'fresh water',
     }
 
     const createRarityMeter = (rarity) => {
@@ -111,6 +108,8 @@ const { environment } = Astro.props;
                 record.append(rarityCell);
                 tbody.append(record);
             }
+
+            scrollToUrlFragment();
         }
     }
 

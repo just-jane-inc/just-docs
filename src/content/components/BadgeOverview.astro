@@ -1,6 +1,8 @@
 <badge-definition-list />
 
 <script>
+    import { scrollToUrlFragment } from "../viewport.ts";
+
     // Fetch the badges during runtime, not during build time.
     const response = await fetch('https://api.bahms.org/v1/badges/');
     const badges = await response.json();
@@ -108,6 +110,8 @@
             // Reset the list.
             this.innerHTML = '';
             this.append(dl);
+
+            scrollToUrlFragment();
         }
     }
 
