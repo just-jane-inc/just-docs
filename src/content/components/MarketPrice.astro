@@ -17,7 +17,7 @@ const { product, unit = 'gv', showUnit = true } = Astro.props;
 <script>
     // Fetch the price during runtime, not during build time.
     const response = await fetch('https://api.bahms.org/v1/price');
-    const catalog = await response.json();
+    const catalog = response.ok ? await response.json() : undefined;
 
     if (typeof catalog !== 'object') {
         console.error('Failed to fetch BAHMS catalog.');
