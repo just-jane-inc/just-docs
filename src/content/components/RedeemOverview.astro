@@ -141,15 +141,8 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
     //   then, copy the redeems for that list and only consume within the list.
     //   This should also address the naive post-select logic.
     const consumeRedeems = (selector) => {
-        // @todo Solve this by creating a regular expression and replace all
-        //   occurrences of * with .+
-        if (selector === '*') {
-            const result = redeems;
-            redeems = [];
-            return result;
-        }
-
-        const result = Array.from(redeems).filter(({id}) => id === selector);
+        const matcher = new RegExp(`^${selector}$`);
+        const result = Array.from(redeems).filter(({id}) => matcher.test(id));
         const remove = result.map(({id}) => id);
 
         redeems = redeems.filter(({id}) => !remove.includes(id));

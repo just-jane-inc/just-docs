@@ -67,7 +67,7 @@ export const selectRedeems = async (selection: RedeemsSelection): Promise<Redeem
 
 export const selectRemainingRedeems = async (overrides: RedeemOverrides = {}): Promise<RedeemsSelectorConfiguration> => ({
     onSelect: {},
-    postSelect: {['*']: {
+    postSelect: {['.+']: {
         ...overrides,
         description: await resolveRedeemDescription(
             overrides.description ?? ''
