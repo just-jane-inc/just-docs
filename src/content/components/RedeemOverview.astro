@@ -1,21 +1,44 @@
 ---
-import {CardGrid} from "@astrojs/starlight/components";
+import {
+    type RedeemsSection,
+    type RedeemsSelectorConfiguration,
+    unwrapRedeemsSection
+} from "../redeems.ts";
+
+interface Props {
+    sections: RedeemsSection[];
+}
+
+const { sections = [] } = Astro.props;
+
+const preparedSections = await Promise.all(sections.map(unwrapRedeemsSection));
 ---
 <redeems-index />
+
+{preparedSections.map(
+    ({title, description, redeems: { onSelect, postSelect }}) => <redeems-section
+        data-on-select={JSON.stringify(onSelect)}
+        data-post-select={JSON.stringify(postSelect)}
+        class:list={['empty']}
+    >
+        <h2>{title}</h2>
+        <div set:html={description} />
+    </redeems-section>
+)}
 
 <script>
     import { scrollToUrlFragment } from "../viewport.ts";
 
     // Fetch the redeems during runtime, not during build time.
     const response = await fetch('https://api.bahms.org/v1/twitch/redeems');
-    const redeems = await response.json();
+    let redeems = response.ok ? await response.json() : undefined;
 
     if (typeof redeems !== 'object') {
         console.error('Could not load redeems from API endpoint');
     }
 
     // Very naive way to turn the redeem title into a URL slug.
-    const createSlug = (title: string): string => title
+    const createSlug = (title) => String(title)
         .toLowerCase()
         .replaceAll(' ', '-');
 
@@ -117,10 +140,139 @@ import {CardGrid} from "@astrojs/starlight/components";
         }
     }
 
+    // @todo Solve this by wrapping the redeem sections in a redeem sections list.
+    //   then, copy the redeems for that list and only consume within the list.
+    //   This should also address the naive post-select logic.
+    const consumeRedeems = (selector) => {
+        // @todo Solve this by creating a regular expression and replace all
+        //   occurrences of * with .+
+        if (selector === '*') {
+            const result = redeems;
+            redeems = [];
+            return result;
+        }
+
+        const result = Array.from(redeems).filter(({id}) => id === selector);
+        const remove = result.map(({id}) => id);
+
+        redeems = redeems.filter(({id}) => !remove.includes(id));
+
+        return result;
+    }
+
+    class RedeemCard extends HTMLElement {
+        connectedCallback() {
+            const { title, description, icon } = this.dataset;
+
+            if (!title) {
+                throw new Error('Redeem requires a title');
+            }
+
+            if (!description) {
+                throw new Error(`Redeem ${title} requires a description`);
+            }
+
+            if (!icon) {
+                throw new Error(`Redeem ${title} requires an icon`);
+            }
+
+            const figure = document.createElement('figure');
+            figure.classList.add('icon');
+            const image = document.createElement('img');
+            image.setAttribute('alt', title);
+            image.setAttribute('src', icon);
+
+            figure.append(image);
+            this.append(figure);
+
+            const heading = document.createElement('h3');
+            heading.innerText = title;
+            heading.id = createSlug(title);
+            this.append(heading);
+
+            const descriptionContainer = document.createElement('div');
+            descriptionContainer.innerHTML = description;
+            this.append(descriptionContainer);
+        }
+    }
+
+    // @todo Debounce the post selection step, so it waits for the other
+    // redeems sections.
+    class RedeemsSection extends HTMLElement {
+        connectedCallback() {
+            const { onSelect, postSelect } = this.dataset;
+
+            const heading = this.querySelector('h2');
+
+            // Make sure the heading has an ID.
+            if (heading && !heading.id) {
+                heading.id = createSlug(heading.innerText);
+            }
+
+            const selectionConfig = JSON.parse(onSelect ?? '{}');
+            const postSelectionConfig = JSON.parse(postSelect ?? '{}');
+
+            const sectionRedeems = [];
+
+            // Do the initial selection.
+            for (const selector of Object.keys(selectionConfig)) {
+                sectionRedeems.push(
+                    ...consumeRedeems(selector).map(
+                        (redeem) => ({...redeem, ...selectionConfig[selector]})
+                    )
+                );
+            }
+            // Do the post selection.
+            // N.B.: In the current implementation this is too naive.
+            for (const selector of Object.keys(postSelectionConfig)) {
+                sectionRedeems.push(
+                    ...consumeRedeems(selector).map(
+                        (redeem) => ({...redeem, ...postSelectionConfig[selector]})
+                    )
+                );
+            }
+
+            for (const {
+                id,
+                title,
+                description,
+                prompt,
+                'is-paused': isPaused,
+                'background-color': color,
+                image: { 'url-4x': icon },
+            } of sectionRedeems) {
+                const redeem = document.createElement('redeem-card');
+                redeem.id = `redeem-${id}`;
+                redeem.dataset.title = title;
+                redeem.dataset.description = description || prompt;
+                redeem.dataset.icon = icon;
+
+                if (isPaused) {
+                    redeem.classList.add('paused');
+                }
+
+                redeem.style.setProperty('--redeem-color', color);
+
+                this.append(redeem);
+            }
+
+            if (sectionRedeems.length > 0) {
+                this.classList.remove('empty');
+
+                // Scroll to the section of documentation selected in the URL.
+                scrollToUrlFragment();
+            } else {
+                this.remove();
+            }
+        }
+    }
+
     // Initialize the components if the API produced a valid response.
     if (typeof redeems === 'object' && Array.from(redeems).length > 0) {
         customElements.define('redeems-index-card', RedeemsIndexCard);
         customElements.define('redeems-index', RedeemsIndex);
+        customElements.define('redeems-section', RedeemsSection);
+        customElements.define('redeem-card', RedeemCard);
     }
 </script>
 
@@ -219,6 +371,81 @@ import {CardGrid} from "@astrojs/starlight/components";
         redeems-index {
             grid-template-columns: 1fr 1fr;
             gap: 1.5rem;
+        }
+    }
+
+    redeems-section + redeems-section {
+        margin-top: 4rem;
+    }
+
+    redeems-section {
+        display: block;
+        margin-top: 2rem;
+
+        &.empty {
+            display: none;
+        }
+
+        redeem-card {
+            --redeem-color: var(--sl-color-text-accent);
+            --redeem-border-alpha: 0.3;
+            --padding: 2rem;
+
+            display: block;
+            background-color: var(--sl-color-bg-sidebar);
+            border: 3px solid color(
+                from var(--redeem-color)
+                srgb
+                r g b / var(--redeem-border-alpha)
+            );
+
+            margin-top: 2.6rem;
+            padding: var(--padding);
+            border-radius: .5rem;
+
+            position: relative;
+
+            figure {
+                padding-left: 3px;
+                background-color: color(
+                    from var(--redeem-color) srgb r g b / var(--redeem-border-alpha)
+                );
+
+                &.icon {
+                    float: right;
+                    padding: 1em;
+                    margin: 0 0 var(--padding) var(--padding);
+                    height: 66px;
+                    border-radius: .5em;
+
+                    img {
+                        height: 100%;
+                        aspect-ratio: auto;
+                    }
+                }
+            }
+
+            h3 {
+                float: left;
+                margin-top: 0;
+            }
+
+            div {
+                clear: both;
+            }
+
+            &.paused {
+                opacity: .3;
+            }
+
+            &:hover {
+                --redeem-border-alpha: 0.6;
+                box-shadow: 0 0 .5rem 0 color(
+                    from var(--sl-color-text)
+                    srgb
+                    r g b / var(--redeem-border-alpha)
+                );
+            }
         }
     }
 </style>

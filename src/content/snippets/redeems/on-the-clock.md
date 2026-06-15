@@ -1,0 +1,1 @@
+As B.A.H.M.S. employee, you are given the tools to perform your job to the best of your abilities.
