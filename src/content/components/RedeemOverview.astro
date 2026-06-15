@@ -15,16 +15,7 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
 ---
 <redeems-index />
 
-{preparedSections.map(
-    ({title, description, redeems: { onSelect, postSelect }}) => <redeems-section
-        data-on-select={JSON.stringify(onSelect)}
-        data-post-select={JSON.stringify(postSelect)}
-        class:list={['empty']}
-    >
-        <h2>{title}</h2>
-        <div set:html={description} />
-    </redeems-section>
-)}
+<redeems-section-list data-sections={JSON.stringify(preparedSections)} />
 
 <script>
     import { scrollToUrlFragment } from "../viewport.ts";
@@ -137,19 +128,6 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
         }
     }
 
-    // @todo Solve this by wrapping the redeem sections in a redeem sections list.
-    //   then, copy the redeems for that list and only consume within the list.
-    //   This should also address the naive post-select logic.
-    const consumeRedeems = (selector) => {
-        const matcher = new RegExp(`^${selector}$`);
-        const result = Array.from(redeems).filter(({id}) => matcher.test(id));
-        const remove = result.map(({id}) => id);
-
-        redeems = redeems.filter(({id}) => !remove.includes(id));
-
-        return result;
-    }
-
     class RedeemCard extends HTMLElement {
         connectedCallback() {
             const { title, description, icon, cost } = this.dataset;
@@ -201,41 +179,32 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
         }
     }
 
-    // @todo Debounce the post selection step, so it waits for the other
-    // redeems sections.
     class RedeemsSection extends HTMLElement {
         connectedCallback() {
-            const { onSelect, postSelect } = this.dataset;
+            const { title, description, redeems: encodedRedeems } = this.dataset;
 
-            const heading = this.querySelector('h2');
-
-            // Make sure the heading has an ID.
-            if (heading && !heading.id) {
-                heading.id = createSlug(heading.innerText);
+            if (!title) {
+                throw new Error('Redeems section requires a title');
             }
 
-            const selectionConfig = JSON.parse(onSelect ?? '{}');
-            const postSelectionConfig = JSON.parse(postSelect ?? '{}');
-
-            const sectionRedeems = [];
-
-            // Do the initial selection.
-            for (const selector of Object.keys(selectionConfig)) {
-                sectionRedeems.push(
-                    ...consumeRedeems(selector).map(
-                        (redeem) => ({...redeem, ...selectionConfig[selector]})
-                    )
-                );
+            if (!description) {
+                throw new Error(`Redeems section ${title} requires a description`);
             }
-            // Do the post selection.
-            // N.B.: In the current implementation this is too naive.
-            for (const selector of Object.keys(postSelectionConfig)) {
-                sectionRedeems.push(
-                    ...consumeRedeems(selector).map(
-                        (redeem) => ({...redeem, ...postSelectionConfig[selector]})
-                    )
-                );
+
+            const redeems = JSON.parse(encodedRedeems ?? '[]');
+
+            if (!Array.isArray(redeems) || redeems.length < 1) {
+                throw new Error(`Redeems section ${title} requires a non-empty list of redeems`);
             }
+
+            const heading = document.createElement('h2');
+            heading.innerText = title;
+            heading.id = createSlug(title);
+            this.append(heading);
+
+            const descriptionContainer = document.createElement('div');
+            descriptionContainer.innerHTML = description;
+            this.append(descriptionContainer);
 
             for (const {
                 id,
@@ -246,7 +215,7 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
                 'is-paused': isPaused,
                 'background-color': color,
                 image: { 'url-4x': icon },
-            } of sectionRedeems) {
+            } of redeems) {
                 const redeem = document.createElement('redeem-card');
                 redeem.id = `redeem-${id}`;
                 redeem.dataset.title = title;
@@ -262,15 +231,69 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
 
                 this.append(redeem);
             }
+        }
+    }
 
-            if (sectionRedeems.length > 0) {
-                this.classList.remove('empty');
+    class RedeemsSectionList extends HTMLElement {
+        connectedCallback() {
+            const sections = JSON.parse(this.dataset.sections ?? '[]');
 
-                // Scroll to the section of documentation selected in the URL.
-                scrollToUrlFragment();
-            } else {
-                this.remove();
+            if (!Array.isArray(sections)) {
+                throw new Error('Invalid section configuration');
             }
+
+            let availableRedeems = [...redeems];
+            const consumeRedeems = (selector) => {
+                const matcher = new RegExp(`^${selector}$`);
+                const result = Array.from(availableRedeems).filter(({id}) => matcher.test(id));
+                const remove = result.map(({id}) => id);
+
+                availableRedeems = availableRedeems.filter(({id}) => !remove.includes(id));
+
+                return result;
+            }
+
+            // Initial selection.
+            for (const section of sections) {
+                const { redeems: { onSelect: selection } } = section;
+                section.selected = [];
+                for (const selector of Object.keys(selection)) {
+                    section.selected.push(
+                        ...consumeRedeems(selector).map(
+                            (redeem) => ({...redeem, ...selection[selector]})
+                        )
+                    );
+                }
+            }
+
+            // Secondary selection.
+            for (const section of sections) {
+                const { redeems: { postSelect: selection } } = section;
+                for (const selector of Object.keys(selection)) {
+                    section.selected.push(
+                        ...consumeRedeems(selector).map(
+                            (redeem) => ({...redeem, ...selection[selector]})
+                        )
+                    );
+                }
+            }
+
+            // Render the sections.
+            for (const { title, description, selected = [] } of sections) {
+                if (selected.length === 0) {
+                    continue;
+                }
+
+                const section = document.createElement('redeems-section');
+                section.dataset.title = title;
+                section.dataset.description = description;
+                section.dataset.redeems = JSON.stringify(selected);
+
+                this.append(section);
+            }
+
+            // Scroll to the section of documentation selected in the URL.
+            scrollToUrlFragment();
         }
     }
 
@@ -278,6 +301,7 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
     if (typeof redeems === 'object' && Array.from(redeems).length > 0) {
         customElements.define('redeems-index-card', RedeemsIndexCard);
         customElements.define('redeems-index', RedeemsIndex);
+        customElements.define('redeems-section-list', RedeemsSectionList);
         customElements.define('redeems-section', RedeemsSection);
         customElements.define('redeem-card', RedeemCard);
     }
@@ -381,94 +405,88 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
         }
     }
 
-    redeems-section + redeems-section {
-        margin-top: 4rem;
-    }
-
-    redeems-section {
-        display: block;
-        margin-top: 2rem;
-
-        &.empty {
-            display: none;
+    redeems-section-list {
+        redeems-section + redeems-section {
+            margin-top: 4rem;
         }
 
-        redeem-card {
-            --redeem-color: var(--sl-color-text-accent);
-            --redeem-border-alpha: 0.3;
-            --padding: 2rem;
-
+        redeems-section {
             display: block;
-            background-color: var(--sl-color-bg-sidebar);
-            border: 3px solid color(
-                from var(--redeem-color)
-                srgb
-                r g b / var(--redeem-border-alpha)
-            );
+            margin-top: 2rem;
 
-            margin-top: 2.6rem;
-            padding: var(--padding);
-            border-radius: .5rem;
+            redeem-card {
+                --redeem-color: var(--sl-color-text-accent);
+                --redeem-border-alpha: 0.3;
+                --padding: 2rem;
 
-            position: relative;
-
-            figure {
-                padding-left: 3px;
-                background-color: color(
+                display: block;
+                background-color: var(--sl-color-bg-sidebar);
+                border: 3px solid color(
                     from var(--redeem-color) srgb r g b / var(--redeem-border-alpha)
                 );
-            }
 
-            > a {
-                display: block;
-                width: 100%;
-                text-decoration: none;
-                color: inherit;
-                margin-bottom: 2em;
+                margin-top: 2.6rem;
+                padding: var(--padding);
+                border-radius: .5rem;
 
-                &:hover {
-                    h3 {
-                        text-decoration: underline;
-                    }
-                }
-
-                h3 {
-                    margin-top: 0;
-                }
-
-                p {
-                    font-size: 0.8em;
-                }
+                position: relative;
 
                 figure {
-                    float: right;
-                    padding: 1em;
-                    margin: 0 0 var(--padding) var(--padding);
-                    height: 66px;
-                    border-radius: .5em;
+                    padding-left: 3px;
+                    background-color: color(
+                        from var(--redeem-color) srgb r g b / var(--redeem-border-alpha)
+                    );
+                }
 
-                    img {
-                        height: 100%;
-                        aspect-ratio: auto;
+                > a {
+                    display: block;
+                    width: 100%;
+                    text-decoration: none;
+                    color: inherit;
+                    margin-bottom: 2em;
+
+                    &:hover {
+                        h3 {
+                            text-decoration: underline;
+                        }
+                    }
+
+                    h3 {
+                        margin-top: 0;
+                    }
+
+                    p {
+                        font-size: 0.8em;
+                    }
+
+                    figure {
+                        float: right;
+                        padding: 1em;
+                        margin: 0 0 var(--padding) var(--padding);
+                        height: 66px;
+                        border-radius: .5em;
+
+                        img {
+                            height: 100%;
+                            aspect-ratio: auto;
+                        }
                     }
                 }
-            }
 
-            > div {
-                clear: both;
-            }
+                > div {
+                    clear: both;
+                }
 
-            &.paused {
-                opacity: .3;
-            }
+                &.paused {
+                    opacity: .3;
+                }
 
-            &:hover {
-                --redeem-border-alpha: 0.6;
-                box-shadow: 0 0 .5rem 0 color(
-                    from var(--sl-color-text)
-                    srgb
-                    r g b / var(--redeem-border-alpha)
-                );
+                &:hover {
+                    --redeem-border-alpha: 0.6;
+                    box-shadow: 0 0 .5rem 0 color(
+                        from var(--sl-color-text) srgb r g b / var(--redeem-border-alpha)
+                    );
+                }
             }
         }
     }
