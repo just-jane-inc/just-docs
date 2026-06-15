@@ -31,7 +31,9 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
     // Very naive way to turn the redeem title into a URL slug.
     const createSlug = (title) => String(title)
         .toLowerCase()
-        .replaceAll(' ', '-');
+        .replaceAll(/[\s\[\]]+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
 
     const decimalFormatter = new Intl.NumberFormat('en-US', { style: 'decimal' });
 
