@@ -13,7 +13,17 @@ const { sections = [] } = Astro.props;
 
 const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
 ---
-<redeems-index />
+<redeems-index>
+    <table>
+        <thead>
+            <tr>
+                <th colspan="2">Redeem</th>
+                <th title="Sorted by cost ascending">Cost ▴</th>
+            </tr>
+        </thead>
+        <tbody />
+    </table>
+</redeems-index>
 
 <redeems-section-list data-sections={JSON.stringify(preparedSections)} />
 
@@ -37,76 +47,14 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
 
     const decimalFormatter = new Intl.NumberFormat('en-US', { style: 'decimal' });
 
-    class RedeemsIndexCard extends HTMLElement {
-        connectedCallback() {
-            const { title, cost, icon, color, isPaused } = this.dataset;
-
-            if (!title) {
-                throw new Error('Redeem requires a title');
-            }
-
-            if (!cost) {
-                throw new Error(`Redeem "${title}" requires channel points`);
-            }
-
-            if (!icon) {
-                throw new Error(`Redeem "${title}" requires icon URL`);
-            }
-
-            if (!color) {
-                throw new Error(`Redeem "${title}" requires a color`);
-            }
-
-            this.title = title;
-
-            // Configure the icon color for the current redeem.
-            this.style.setProperty('--redeem-color', `${color}`);
-
-            // Reflect the paused state.
-            if (isPaused) {
-                this.classList.add('paused');
-            }
-
-            // Create an anchor that navigates to the full description of the redeem.
-            const anchor = document.createElement('a');
-            anchor.setAttribute('href', `#${createSlug(title)}`);
-            anchor.setAttribute('title', title);
-
-            // Create the card that visually forms the entry in the index.
-            const card = document.createElement('article');
-
-            const redeemTitle = document.createElement('p');
-            redeemTitle.classList.add('redeem-title');
-            redeemTitle.innerText = title;
-            card.append(redeemTitle);
-
-            const redeemIcon = document.createElement('span');
-            redeemIcon.classList.add('redeem-icon');
-            redeemTitle.prepend(redeemIcon);
-
-            const redeemImage = document.createElement('img');
-            redeemImage.setAttribute('src', icon);
-            redeemImage.setAttribute('alt', title);
-            redeemIcon.append(redeemImage);
-
-            const redeemChannelPoints = document.createElement('p');
-            redeemChannelPoints.innerText = 'Channel points: ';
-            const channelPointsValue = document.createElement('code');
-            channelPointsValue.innerText = decimalFormatter.format(cost);
-            redeemChannelPoints.append(channelPointsValue);
-            card.append(redeemChannelPoints);
-
-            // Append the anchor to the current index entry.
-            anchor.append(card);
-            this.append(anchor);
-        }
-    }
-
     class RedeemsIndex extends HTMLElement {
         connectedCallback() {
-            // Reset the index.
-            this.innerHTML = '';
+            const records = this.querySelector('tbody');
             const sortedRedeems = redeems.sort(({cost: costA}, {cost: costB}) => costA - costB);
+
+            if (!records) {
+                throw new Error('Cound not render redeems index without table body')
+            }
 
             // Populate the index.
             for (const {
@@ -117,15 +65,39 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
                 'background-color': color,
                 'is-paused': isPaused,
             } of sortedRedeems) {
-                const card = document.createElement('redeems-index-card');
-                card.id = `redeem-${id}-index-card`;
-                card.dataset.title = title;
-                card.dataset.cost = cost;
-                card.dataset.icon = icon;
-                card.dataset.color = color;
-                card.dataset.isPaused = isPaused ? 'paused' : '';
+                const row = document.createElement('tr');
 
-                this.append(card);
+                // Configure the icon color for the current redeem.
+                row.style.setProperty('--redeem-color', `${color}`);
+
+                // Reflect the paused state.
+                if (isPaused) {
+                    row.classList.add('paused');
+                }
+
+                const redeemIcon = document.createElement('td');
+                redeemIcon.classList.add('redeem-icon');
+                row.prepend(redeemIcon);
+
+                const redeemImage = document.createElement('img');
+                redeemImage.setAttribute('src', icon);
+                redeemImage.setAttribute('alt', title);
+                redeemIcon.append(redeemImage);
+
+                const redeemTitle = document.createElement('td');
+                const anchor = document.createElement('a');
+                anchor.href = `#${createSlug(title)}`;
+                anchor.title = title;
+                anchor.innerText = title;
+                redeemTitle.append(anchor);
+                row.append(redeemTitle);
+
+                const redeemChannelPoints = document.createElement('td');
+                redeemChannelPoints.innerText = decimalFormatter.format(cost);
+                redeemChannelPoints.title = `${redeemChannelPoints.innerText} channel points`;
+                row.append(redeemChannelPoints);
+
+                records.append(row);
             }
         }
     }
@@ -301,7 +273,6 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
 
     // Initialize the components if the API produced a valid response.
     if (typeof redeems === 'object' && Array.from(redeems).length > 0) {
-        customElements.define('redeems-index-card', RedeemsIndexCard);
         customElements.define('redeems-index', RedeemsIndex);
         customElements.define('redeems-section-list', RedeemsSectionList);
         customElements.define('redeems-section', RedeemsSection);
@@ -311,85 +282,78 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
 
 <style>
     redeems-index {
-        display: grid;
-        grid-template-columns: 100%;
-        gap: 1rem;
+        display: block;
+        margin-top: 2rem;
 
-        redeems-index-card {
-            --redeem-color: var(--sl-color-text-accent);
+        table {
+            width: 100%;
+            display: table;
 
-            &.paused {
-                opacity: .3;
+            thead th:last-child, tbody td:last-child {
+                text-align: end;
+                padding-inline-end: .5em;
             }
 
-            a {
-                text-decoration-line: none;
-                color: var(--sl-color-white);
-            }
+            tbody {
+                tr {
+                    --redeem-color: var(--sl-color-text-accent);
+                    --redeem-background-alpha: 0;
 
-            article {
-                --redeem-background-alpha: 0;
-                --redeem-icon-background-alpha: 0.3;
-                border: 1px solid var(--sl-color-gray-5);
-                padding: clamp(1rem, calc(0.125rem + 3vw), 2.5rem);
-                flex-direction: column;
-                gap: clamp(0.5rem, calc(0.125rem + 1vw), 1rem);
-                text-decoration-line: none;
-
-                background-color: color(
-                    from var(--redeem-color)
-                    srgb
-                    r g b / var(--redeem-background-alpha)
-                );
-
-                .redeem-title {
-                    font-size: 1.3em;
-                    font-weight: 700;
-                }
-
-                .redeem-icon {
-                    display: inline-block;
                     background-color: color(
                         from var(--redeem-color)
                         srgb
-                        r g b / var(--redeem-icon-background-alpha)
+                        r g b / var(--redeem-background-alpha)
                     );
 
-                    border: 1px solid var(--redeem-color);
-                    border-radius: 3px;
-
-                    text-align: center;
-
-                    padding: 4px;
-                    margin-right: .5em;
-                    line-height: 12px;
-
-                    img {
-                        --size: 20px;
-                        display: inline-block;
-                        max-width: var(--size);
-                        max-height: var(--size);
+                    &.paused {
+                        opacity: .3;
                     }
-                }
-            }
 
-            &:hover {
-                a {
-                    text-decoration: underline;
-                }
+                    td {
+                        line-height: 3em;
+                        padding: 0;
 
-                article {
-                    --redeem-icon-background-alpha: 0;
-                    --redeem-background-alpha: 0.3;
-                    border-color: color(
-                        from var(--redeem-color)
-                        srgb
-                        r g b / 1
-                    );
-                    border-radius: 3px;
+                        &:first-child {
+                            border-radius: 3px 0 0 3px;
+                        }
+
+                        &:last-child {
+                            border-radius: 0 3px 3px 0;
+                        }
+                    }
+
+                    a {
+                        display: block;
+                        text-decoration-line: none;
+                        color: var(--sl-color-white);
+                        width: 100%;
+                        padding-inline: 1em;
+                    }
 
                     .redeem-icon {
-                        border-color: var(--sl-color-text);
+                        background-color: var(--redeem-color);
+
+                        position: relative;
+                        width: 50px;
+
+                        img {
+                            --size: 20px;
+                            display: inline-block;
+                            max-width: var(--size);
+                            max-height: var(--size);
+                            position: absolute;
+                            left: 50%;
+                            top: 50%;
+                            transform: translate(-50%, -50%);
+                        }
+                    }
+
+                    &:hover {
+                        --redeem-background-alpha: 0.3;
+
+                        a {
+                            text-decoration-line: underline;
+                        }
                     }
                 }
             }
