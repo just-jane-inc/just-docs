@@ -1,0 +1,66 @@
+---
+import { RedeemID } from '../redeems.ts';
+import {AstroError} from "astro/errors";
+
+interface Props {
+    id: RedeemID;
+}
+
+const { id } = Astro.props;
+
+if (!id) {
+    throw new AstroError('Cannot create a redeem link without redeem ID.');
+}
+---
+<>
+    <redeem-anchor data-id={id}>
+        <a><slot /></a>
+    </redeem-anchor>
+</>
+
+<script>
+    // Fetch the redeems during runtime, not during build time.
+    const response = await fetch('https://api.bahms.org/v1/twitch/redeems');
+    const redeems = response.ok ? await response.json() : undefined;
+
+    if (typeof redeems !== 'object') {
+        console.error('Could not load redeems from API endpoint');
+    }
+
+    // Very naive way to turn the redeem title into a URL slug.
+    const createSlug = (title) => String(title)
+        .toLowerCase()
+        .replaceAll(/[\s\[\]]+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
+
+    class RedeemAnchor extends HTMLElement {
+        connectedCallback() {
+            const {id} = this.dataset;
+            const redeem = redeems.find(({id: candidate}) => candidate === id);
+
+            if (!redeem) {
+                throw new Error(`Could not load redeem ${id} from API endpoint`);
+            }
+
+            const anchor = this.querySelector('a');
+
+            if (anchor?.constructor !== HTMLAnchorElement) {
+                throw new Error('Could not find anchor element for redeem link');
+            }
+
+            anchor.setAttribute('href', `/redeems/#${createSlug(redeem.title)}`);
+            anchor.title = `${redeem.title} redeem`;
+
+            // noinspection TypeScriptUnresolvedReference
+            if (anchor.innerText?.length === 0) {
+                // noinspection TypeScriptUnresolvedReference
+                anchor.innerText = redeem.title;
+            }
+        }
+    }
+
+    if (typeof redeems === 'object' && Array.from(redeems).length > 0) {
+        customElements.define('redeem-anchor', RedeemAnchor);
+    }
+</script>
