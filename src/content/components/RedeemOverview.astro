@@ -162,7 +162,7 @@ const preparedSections = await Promise.all(sections.map(unwrapRedeemsSection));
 
     class RedeemCard extends HTMLElement {
         connectedCallback() {
-            const { title, description, icon } = this.dataset;
+            const { title, description, icon, cost } = this.dataset;
 
             if (!title) {
                 throw new Error('Redeem requires a title');
@@ -176,19 +176,34 @@ const preparedSections = await Promise.all(sections.map(unwrapRedeemsSection));
                 throw new Error(`Redeem ${title} requires an icon`);
             }
 
+            if (!cost) {
+                throw new Error(`Redeem ${title} requires a cost`);
+            }
+
+            const headingAnchor = document.createElement('a');
+            headingAnchor.href = `#${createSlug(title)}`;
+
             const figure = document.createElement('figure');
-            figure.classList.add('icon');
             const image = document.createElement('img');
-            image.setAttribute('alt', title);
-            image.setAttribute('src', icon);
+            image.alt = title;
+            image.src = icon;
 
             figure.append(image);
-            this.append(figure);
+            headingAnchor.append(figure);
 
             const heading = document.createElement('h3');
             heading.innerText = title;
             heading.id = createSlug(title);
-            this.append(heading);
+            headingAnchor.append(heading);
+
+            const channelPointsValue = document.createElement('code');
+            channelPointsValue.innerText = decimalFormatter.format(cost);
+            const channelPoints = document.createElement('p');
+            channelPoints.innerText = ' channel points';
+            channelPoints.prepend(channelPointsValue);
+            headingAnchor.append(channelPoints);
+
+            this.append(headingAnchor);
 
             const descriptionContainer = document.createElement('div');
             descriptionContainer.innerHTML = description;
@@ -237,6 +252,7 @@ const preparedSections = await Promise.all(sections.map(unwrapRedeemsSection));
                 title,
                 description,
                 prompt,
+                cost,
                 'is-paused': isPaused,
                 'background-color': color,
                 image: { 'url-4x': icon },
@@ -246,6 +262,7 @@ const preparedSections = await Promise.all(sections.map(unwrapRedeemsSection));
                 redeem.dataset.title = title;
                 redeem.dataset.description = description || prompt;
                 redeem.dataset.icon = icon;
+                redeem.dataset.cost = cost;
 
                 if (isPaused) {
                     redeem.classList.add('paused');
@@ -410,8 +427,26 @@ const preparedSections = await Promise.all(sections.map(unwrapRedeemsSection));
                 background-color: color(
                     from var(--redeem-color) srgb r g b / var(--redeem-border-alpha)
                 );
+            }
 
-                &.icon {
+            > a {
+                display: block;
+                width: 100%;
+                text-decoration: none;
+                color: inherit;
+                margin-bottom: 2em;
+
+                &:hover {
+                    h3 {
+                        text-decoration: underline;
+                    }
+                }
+
+                h3 {
+                    margin-top: 0;
+                }
+
+                figure {
                     float: right;
                     padding: 1em;
                     margin: 0 0 var(--padding) var(--padding);
@@ -425,12 +460,7 @@ const preparedSections = await Promise.all(sections.map(unwrapRedeemsSection));
                 }
             }
 
-            h3 {
-                float: left;
-                margin-top: 0;
-            }
-
-            div {
+            > div {
                 clear: both;
             }
 
