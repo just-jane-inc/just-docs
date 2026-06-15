@@ -7,7 +7,7 @@ interface Props {
 
 const { sections = [] } = Astro.props;
 
-const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
+const resolvedSections = await Promise.all(sections.map(resolveRedeemsSection));
 ---
 <redeems-index>
     <table>
@@ -21,7 +21,7 @@ const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
     </table>
 </redeems-index>
 
-<redeems-section-list data-sections={JSON.stringify(preparedSections)} />
+<redeems-section-list data-sections={JSON.stringify(resolvedSections)} />
 
 <script>
     import { scrollToUrlFragment } from "../viewport.ts";
