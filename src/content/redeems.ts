@@ -13,13 +13,13 @@ export interface RedeemsSection {
     redeems: Promise<RedeemsSelectorConfiguration>;
 }
 
-export interface UnwrappedRedeemsSection {
+export interface ResolvedRedeemsSection {
     title: string;
     description: string;
     redeems: RedeemsSelectorConfiguration;
 }
 
-export const unwrapRedeemDescription = async (description: string|Promise<MarkdownInstance<any>>): Promise<string> => {
+export const resolveRedeemDescription = async (description: string|Promise<MarkdownInstance<any>>): Promise<string> => {
     let attemptsRemaining = 3;
     let result = description;
 
@@ -35,9 +35,9 @@ export const unwrapRedeemDescription = async (description: string|Promise<Markdo
     return result;
 }
 
-export const unwrapRedeemsSection = async (section: RedeemsSection): Promise<UnwrappedRedeemsSection> => ({
+export const resolveRedeemsSection = async (section: RedeemsSection): Promise<ResolvedRedeemsSection> => ({
     ...section,
-    description: await unwrapRedeemDescription(section.description ?? ''),
+    description: await resolveRedeemDescription(section.description ?? ''),
     redeems: await section.redeems
 })
 
@@ -55,7 +55,7 @@ export const selectRedeems = async (selection: RedeemsSelection): Promise<Redeem
         
         onSelect[selector] = {
             ...overrides,
-            description: await unwrapRedeemDescription(description)
+            description: await resolveRedeemDescription(description)
         };
     }
     
@@ -69,7 +69,7 @@ export const selectRemainingRedeems = async (overrides: RedeemOverrides = {}): P
     onSelect: {},
     postSelect: {['*']: {
         ...overrides,
-        description: await unwrapRedeemDescription(
+        description: await resolveRedeemDescription(
             overrides.description ?? ''
         ),
     }},

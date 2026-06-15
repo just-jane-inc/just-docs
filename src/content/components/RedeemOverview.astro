@@ -2,7 +2,7 @@
 import {
     type RedeemsSection,
     type RedeemsSelectorConfiguration,
-    unwrapRedeemsSection
+    resolveRedeemsSection
 } from "../redeems.ts";
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 
 const { sections = [] } = Astro.props;
 
-const preparedSections = await Promise.all(sections.map(unwrapRedeemsSection));
+const preparedSections = await Promise.all(sections.map(resolveRedeemsSection));
 ---
 <redeems-index />
 
