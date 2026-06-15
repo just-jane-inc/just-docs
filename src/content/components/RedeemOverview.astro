@@ -1,5 +1,6 @@
 ---
 import { type RedeemsSection, resolveRedeemsSection } from "../redeems.ts";
+import { LinkButton } from "@astrojs/starlight/components";
 
 interface Props {
     sections: RedeemsSection[];
@@ -22,6 +23,8 @@ const resolvedSections = await Promise.all(sections.map(resolveRedeemsSection));
 </redeems-index>
 
 <redeems-section-list data-sections={JSON.stringify(resolvedSections)} />
+
+<LinkButton href="#_top" icon="up-arrow">Back to top</LinkButton>
 
 <script>
     import { scrollToUrlFragment } from "../viewport.ts";
@@ -277,6 +280,19 @@ const resolvedSections = await Promise.all(sections.map(resolveRedeemsSection));
 </script>
 
 <style>
+    a[href="#_top"] {
+        position: sticky;
+        bottom: 1rem;
+        left: 100%;
+
+        margin: 2rem 0 -4rem 0;
+        opacity: 0.6;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
     redeems-index {
         display: block;
         margin-top: 2rem;
