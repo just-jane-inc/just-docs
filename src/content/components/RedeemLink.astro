@@ -4,16 +4,17 @@ import {AstroError} from "astro/errors";
 
 interface Props {
     id: RedeemID;
+    button?: boolean;
 }
 
-const { id } = Astro.props;
+const { id, button = false } = Astro.props;
 
 if (!id) {
     throw new AstroError('Cannot create a redeem link without redeem ID.');
 }
 ---
 <>
-    <redeem-anchor data-id={id}>
+    <redeem-anchor data-id={id} class:list={{button}}>
         <a><slot /></a>
     </redeem-anchor>
 </>
@@ -49,13 +50,27 @@ if (!id) {
                 throw new Error('Could not find anchor element for redeem link');
             }
 
-            anchor.setAttribute('href', `/redeems/#${createSlug(redeem.title)}`);
-            anchor.title = `${redeem.title} redeem`;
+            const {
+                title,
+                'background-color': color,
+                image: { 'url-4x': icon },
+            } = redeem;
+
+            this.style.setProperty('--redeem-color', color);
+
+            anchor.setAttribute('href', `/redeems/#${createSlug(title)}`);
+            anchor.title = `${title} redeem`;
 
             // noinspection TypeScriptUnresolvedReference
             if (anchor.innerText?.length === 0) {
                 // noinspection TypeScriptUnresolvedReference
-                anchor.innerText = redeem.title;
+                anchor.innerText = title;
+            }
+
+            if (this.classList.contains('button')) {
+                const image = document.createElement('img');
+                image.src = icon;
+                anchor.prepend(image);
             }
         }
     }
@@ -64,3 +79,39 @@ if (!id) {
         customElements.define('redeem-anchor', RedeemAnchor);
     }
 </script>
+
+<style>
+    .button {
+        --redeem-color: var(--sl-color-text-accent);
+        --redeem-color-alpha: 0.6;
+
+        &:hover {
+            --redeem-color-alpha: 1;
+        }
+
+        display: inline-block;
+        border-radius: 1.7em;
+        background: color(
+            from var(--redeem-color)
+            srgb
+            r g b / var(--redeem-color-alpha)
+        );
+
+        > a {
+            color: var(--sl-color-text);
+            padding-inline: 4em 2em;
+            line-height: 3.4em;
+            position: relative;
+
+            img {
+                display: inline-block;
+                position: absolute;
+                height: 1.8em;
+                width: 1.8em;
+                top: 50%;
+                left: 1.2em;
+                transform: translateY(-50%);
+            }
+        }
+    }
+</style>
