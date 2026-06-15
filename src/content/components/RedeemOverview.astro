@@ -356,17 +356,6 @@ const resolvedSections = await Promise.all(sections.map(resolveRedeemsSection));
         }
     }
 
-    redeems-index > :global(*) {
-        margin-top: 0 !important;
-    }
-
-    @media (min-width: 50rem) {
-        redeems-index {
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-    }
-
     redeems-section-list {
         redeems-section + redeems-section {
             margin-top: 4rem;
