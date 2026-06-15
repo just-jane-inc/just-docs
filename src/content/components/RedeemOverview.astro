@@ -49,7 +49,7 @@ const resolvedSections = await Promise.all(sections.map(resolveRedeemsSection));
             const sortedRedeems = redeems.sort(({cost: costA}, {cost: costB}) => costA - costB);
 
             if (!records) {
-                throw new Error('Cound not render redeems index without table body')
+                throw new Error('Could not render redeems index without table body')
             }
 
             // Populate the index.
