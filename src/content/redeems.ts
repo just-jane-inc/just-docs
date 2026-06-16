@@ -20,10 +20,9 @@ export interface ResolvedRedeemsSection {
 }
 
 export const resolveRedeemDescription = async (description: string|Promise<MarkdownInstance<any>>): Promise<string> => {
-    let attemptsRemaining = 3;
     let result = description;
 
-    while (typeof result === 'object' && --attemptsRemaining >= 0) {
+    if (typeof result === 'object') {
         const markdown = await result;
         result = await markdown.compiledContent()
     }
