@@ -4,6 +4,8 @@ description: Introduction to commands
 ---
 import {Aside} from "@astrojs/starlight/components";
 import MarketPrice from "../components/MarketPrice.astro"
+import RedeemLink from "../components/RedeemLink.astro"
+import {RedeemID} from "../redeems.ts"
 
 commands are prefixed with either `!` or `bang `.
 the `--help` flag can be used to get additional information about commands.
@@ -111,7 +113,7 @@ To play in the [fishing game](/bahms/fishing), make sure you meet all its
 | `!fish <id>` | [chase your fish](/bahms/fishing/#chasing-your-fish) |
 
 <Aside type="tip">
-    Be sure to have a [rod redeemed](/redeems/#test-rod-lvl-1).
+    Be sure to have a <RedeemLink id={RedeemID.FishingRod}>rod redeemed</RedeemLink>.
 </Aside>
 
 ## friends

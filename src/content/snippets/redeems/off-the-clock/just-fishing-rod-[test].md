@@ -1,0 +1,1 @@
+Redeem this rod to help test the [fishing game](/bahms/fishing).

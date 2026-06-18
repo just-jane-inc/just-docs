@@ -2,9 +2,11 @@
 title: Fishing game
 description: Introduction to fishing
 ---
-import {Aside, LinkButton, Steps} from "@astrojs/starlight/components";
+import {Aside, Steps} from "@astrojs/starlight/components";
 import MiddleDot from "../../components/MiddleDot.astro";
 import FishSpeciesOverview from "../../components/FishSpeciesOverview.astro";
+import RedeemLink from "../../components/RedeemLink.astro";
+import {RedeemID} from "../../redeems.ts";
 
 a cat girl needs her fish snack - nya
 
@@ -18,7 +20,7 @@ a cat girl needs her fish snack - nya
 
 In order to play the fishing game, the player needs a rod.
 
-<LinkButton href="/redeems/#test-rod-lvl-1" icon="right-arrow" iconPlacement="start">Test Rod LVL 1</LinkButton>
+<RedeemLink button id={RedeemID.FishingRod} />
 
 ## How to play
 
