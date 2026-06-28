@@ -1,0 +1,460 @@
+---
+import { type RedeemsSection, resolveRedeemsSection } from "../redeems.ts";
+import { LinkButton } from "@astrojs/starlight/components";
+
+interface Props {
+    sections: RedeemsSection[];
+}
+
+const { sections = [] } = Astro.props;
+
+const resolvedSections = await Promise.all(sections.map(resolveRedeemsSection));
+---
+<redeems-index>
+    <table>
+        <thead>
+            <tr>
+                <th colspan="2">Redeem</th>
+                <th title="Sorted by cost ascending">Cost ▴</th>
+            </tr>
+        </thead>
+        <tbody />
+    </table>
+</redeems-index>
+
+<redeems-section-list data-sections={JSON.stringify(resolvedSections)} />
+
+<LinkButton href="#_top" icon="up-arrow">Back to top</LinkButton>
+
+<script>
+    import { scrollToUrlFragment } from "../viewport.ts";
+
+    // Fetch the redeems during runtime, not during build time.
+    const response = await fetch('https://api.bahms.org/v1/twitch/redeems');
+    const redeems = response.ok ? await response.json() : undefined;
+
+    if (typeof redeems !== 'object') {
+        console.error('Could not load redeems from API endpoint');
+    }
+
+    // Very naive way to turn the redeem title into a URL slug.
+    const createSlug = (title) => String(title)
+        .toLowerCase()
+        .replaceAll(/[\s\[\]]+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
+
+    const decimalFormatter = new Intl.NumberFormat('en-US', { style: 'decimal' });
+
+    class RedeemsIndex extends HTMLElement {
+        connectedCallback() {
+            const records = this.querySelector('tbody');
+            const sortedRedeems = redeems.sort(({cost: costA}, {cost: costB}) => costA - costB);
+
+            if (!records) {
+                throw new Error('Could not render redeems index without table body')
+            }
+
+            // Populate the index.
+            for (const {
+                id,
+                title,
+                cost,
+                image: { 'url-4x': icon },
+                'background-color': color,
+                'is-paused': isPaused,
+            } of sortedRedeems) {
+                const row = document.createElement('tr');
+
+                // Configure the icon color for the current redeem.
+                row.style.setProperty('--redeem-color', `${color}`);
+
+                // Reflect the paused state.
+                if (isPaused) {
+                    row.classList.add('paused');
+                }
+
+                const redeemIcon = document.createElement('td');
+                redeemIcon.classList.add('redeem-icon');
+                row.prepend(redeemIcon);
+
+                const redeemImage = document.createElement('img');
+                redeemImage.setAttribute('src', icon);
+                redeemImage.setAttribute('alt', title);
+                redeemIcon.append(redeemImage);
+
+                const redeemTitle = document.createElement('td');
+                const anchor = document.createElement('a');
+                anchor.href = `#${createSlug(title)}`;
+                anchor.title = title;
+                anchor.innerText = title;
+                redeemTitle.append(anchor);
+                row.append(redeemTitle);
+
+                const redeemChannelPoints = document.createElement('td');
+                redeemChannelPoints.innerText = decimalFormatter.format(cost);
+                redeemChannelPoints.title = `${redeemChannelPoints.innerText} channel points`;
+                row.append(redeemChannelPoints);
+
+                records.append(row);
+            }
+        }
+    }
+
+    class RedeemCard extends HTMLElement {
+        connectedCallback() {
+            const { title, description, icon, cost } = this.dataset;
+
+            if (!title) {
+                throw new Error('Redeem requires a title');
+            }
+
+            if (!description) {
+                throw new Error(`Redeem ${title} requires a description`);
+            }
+
+            if (!icon) {
+                throw new Error(`Redeem ${title} requires an icon`);
+            }
+
+            if (!cost) {
+                throw new Error(`Redeem ${title} requires a cost`);
+            }
+
+            const headingAnchor = document.createElement('a');
+            headingAnchor.href = `#${createSlug(title)}`;
+
+            const figure = document.createElement('figure');
+            const image = document.createElement('img');
+            image.alt = title;
+            image.src = icon;
+
+            figure.append(image);
+            headingAnchor.append(figure);
+
+            const heading = document.createElement('h3');
+            heading.innerText = title;
+            heading.id = createSlug(title);
+            headingAnchor.append(heading);
+
+            const channelPointsValue = document.createElement('code');
+            channelPointsValue.innerText = decimalFormatter.format(cost);
+            const channelPoints = document.createElement('p');
+            channelPoints.innerText = ' channel points';
+            channelPoints.prepend(channelPointsValue);
+            headingAnchor.append(channelPoints);
+
+            this.append(headingAnchor);
+
+            const descriptionContainer = document.createElement('div');
+            descriptionContainer.innerHTML = description;
+            this.append(descriptionContainer);
+        }
+    }
+
+    class RedeemsSection extends HTMLElement {
+        connectedCallback() {
+            const { title, description, redeems: encodedRedeems } = this.dataset;
+
+            if (!title) {
+                throw new Error('Redeems section requires a title');
+            }
+
+            if (!description) {
+                throw new Error(`Redeems section ${title} requires a description`);
+            }
+
+            const redeems = JSON.parse(encodedRedeems ?? '[]');
+
+            if (!Array.isArray(redeems) || redeems.length < 1) {
+                throw new Error(`Redeems section ${title} requires a non-empty list of redeems`);
+            }
+
+            const heading = document.createElement('h2');
+            heading.innerText = title;
+            heading.id = createSlug(title);
+            this.append(heading);
+
+            const descriptionContainer = document.createElement('div');
+            descriptionContainer.innerHTML = description;
+            this.append(descriptionContainer);
+
+            for (const {
+                id,
+                title,
+                description,
+                prompt,
+                cost,
+                'is-paused': isPaused,
+                'background-color': color,
+                image: { 'url-4x': icon },
+            } of redeems) {
+                const redeem = document.createElement('redeem-card');
+                redeem.id = `redeem-${id}`;
+                redeem.dataset.title = title;
+                redeem.dataset.description = description || prompt;
+                redeem.dataset.icon = icon;
+                redeem.dataset.cost = cost;
+
+                if (isPaused) {
+                    redeem.classList.add('paused');
+                }
+
+                redeem.style.setProperty('--redeem-color', color);
+
+                this.append(redeem);
+            }
+        }
+    }
+
+    class RedeemsSectionList extends HTMLElement {
+        connectedCallback() {
+            const sections = JSON.parse(this.dataset.sections ?? '[]');
+
+            if (!Array.isArray(sections)) {
+                throw new Error('Invalid section configuration');
+            }
+
+            let availableRedeems = [...redeems];
+            const consumeRedeems = (selector) => {
+                const matcher = new RegExp(`^${selector}$`);
+                const result = Array.from(availableRedeems).filter(({id}) => matcher.test(id));
+                const remove = result.map(({id}) => id);
+
+                availableRedeems = availableRedeems.filter(({id}) => !remove.includes(id));
+
+                return result;
+            }
+
+            // Initial selection.
+            for (const section of sections) {
+                const { redeems: { onSelect: selection } } = section;
+                section.selected = [];
+                for (const selector of Object.keys(selection)) {
+                    section.selected.push(
+                        ...consumeRedeems(selector).map(
+                            (redeem) => ({...redeem, ...selection[selector]})
+                        )
+                    );
+                }
+            }
+
+            // Secondary selection.
+            for (const section of sections) {
+                const { redeems: { postSelect: selection } } = section;
+                for (const selector of Object.keys(selection)) {
+                    section.selected.push(
+                        ...consumeRedeems(selector).map(
+                            (redeem) => ({...redeem, ...selection[selector]})
+                        )
+                    );
+                }
+            }
+
+            // Render the sections.
+            for (const { title, description, selected = [] } of sections) {
+                if (selected.length === 0) {
+                    continue;
+                }
+
+                const section = document.createElement('redeems-section');
+                section.dataset.title = title;
+                section.dataset.description = description;
+                section.dataset.redeems = JSON.stringify(selected);
+
+                this.append(section);
+            }
+
+            // Scroll to the section of documentation selected in the URL.
+            scrollToUrlFragment();
+        }
+    }
+
+    // Initialize the components if the API produced a valid response.
+    if (typeof redeems === 'object' && Array.from(redeems).length > 0) {
+        customElements.define('redeems-index', RedeemsIndex);
+        customElements.define('redeems-section-list', RedeemsSectionList);
+        customElements.define('redeems-section', RedeemsSection);
+        customElements.define('redeem-card', RedeemCard);
+    }
+</script>
+
+<style>
+    a[href="#_top"] {
+        position: sticky;
+        bottom: 1rem;
+        left: 100%;
+
+        margin: 2rem 0 -4rem 0;
+        opacity: 0.6;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    redeems-index {
+        display: block;
+        margin-top: 2rem;
+
+        table {
+            width: 100%;
+            display: table;
+
+            thead th:last-child, tbody td:last-child {
+                text-align: end;
+                padding-inline-end: .5em;
+            }
+
+            tbody {
+                tr {
+                    --redeem-color: var(--sl-color-text-accent);
+                    --redeem-background-alpha: 0;
+
+                    background-color: color(
+                        from var(--redeem-color)
+                        srgb
+                        r g b / var(--redeem-background-alpha)
+                    );
+
+                    &.paused {
+                        opacity: .3;
+                    }
+
+                    td {
+                        line-height: 3em;
+                        padding: 0;
+
+                        &:first-child {
+                            border-radius: 3px 0 0 3px;
+                        }
+
+                        &:last-child {
+                            border-radius: 0 3px 3px 0;
+                        }
+                    }
+
+                    a {
+                        display: block;
+                        text-decoration-line: none;
+                        color: var(--sl-color-white);
+                        width: 100%;
+                        padding-inline: 1em;
+                    }
+
+                    .redeem-icon {
+                        background-color: var(--redeem-color);
+
+                        position: relative;
+                        width: 50px;
+
+                        img {
+                            --size: 20px;
+                            display: inline-block;
+                            max-width: var(--size);
+                            max-height: var(--size);
+                            position: absolute;
+                            left: 50%;
+                            top: 50%;
+                            transform: translate(-50%, -50%);
+                        }
+                    }
+
+                    &:hover {
+                        --redeem-background-alpha: 0.3;
+
+                        a {
+                            text-decoration-line: underline;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    redeems-section-list {
+        redeems-section + redeems-section {
+            margin-top: 4rem;
+        }
+
+        redeems-section {
+            display: block;
+            margin-top: 2rem;
+
+            redeem-card {
+                --redeem-color: var(--sl-color-text-accent);
+                --redeem-border-alpha: 0.3;
+                --padding: 2rem;
+
+                display: block;
+                background-color: var(--sl-color-bg-sidebar);
+                border: 3px solid color(
+                    from var(--redeem-color) srgb r g b / var(--redeem-border-alpha)
+                );
+
+                margin-top: 2.6rem;
+                padding: var(--padding);
+                border-radius: .5rem;
+
+                position: relative;
+
+                figure {
+                    padding-left: 3px;
+                    background-color: color(
+                        from var(--redeem-color) srgb r g b / var(--redeem-border-alpha)
+                    );
+                }
+
+                > a {
+                    display: block;
+                    width: 100%;
+                    text-decoration: none;
+                    color: inherit;
+                    margin-bottom: 2em;
+
+                    &:hover {
+                        h3 {
+                            text-decoration: underline;
+                        }
+                    }
+
+                    h3 {
+                        margin-top: 0;
+                    }
+
+                    p {
+                        font-size: 0.8em;
+                    }
+
+                    figure {
+                        float: right;
+                        padding: 1em;
+                        margin: 0 0 var(--padding) var(--padding);
+                        height: 66px;
+                        border-radius: .5em;
+
+                        img {
+                            height: 100%;
+                            aspect-ratio: auto;
+                        }
+                    }
+                }
+
+                > div {
+                    clear: both;
+                }
+
+                &.paused {
+                    opacity: .3;
+                }
+
+                &:hover {
+                    --redeem-border-alpha: 0.6;
+                    box-shadow: 0 0 .5rem 0 color(
+                        from var(--sl-color-text) srgb r g b / var(--redeem-border-alpha)
+                    );
+                }
+            }
+        }
+    }
+</style>

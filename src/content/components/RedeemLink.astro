@@ -1,0 +1,117 @@
+---
+import { RedeemID } from '../redeems.ts';
+import {AstroError} from "astro/errors";
+
+interface Props {
+    id: RedeemID;
+    button?: boolean;
+}
+
+const { id, button = false } = Astro.props;
+
+if (!id) {
+    throw new AstroError('Cannot create a redeem link without redeem ID.');
+}
+---
+<>
+    <redeem-anchor data-id={id} class:list={{button}}>
+        <a><slot /></a>
+    </redeem-anchor>
+</>
+
+<script>
+    // Fetch the redeems during runtime, not during build time.
+    const response = await fetch('https://api.bahms.org/v1/twitch/redeems');
+    const redeems = response.ok ? await response.json() : undefined;
+
+    if (typeof redeems !== 'object') {
+        console.error('Could not load redeems from API endpoint');
+    }
+
+    // Very naive way to turn the redeem title into a URL slug.
+    const createSlug = (title) => String(title)
+        .toLowerCase()
+        .replaceAll(/[\s\[\]]+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
+
+    class RedeemAnchor extends HTMLElement {
+        connectedCallback() {
+            const {id} = this.dataset;
+            const redeem = redeems.find(({id: candidate}) => candidate === id);
+
+            if (!redeem) {
+                throw new Error(`Could not load redeem ${id} from API endpoint`);
+            }
+
+            const anchor = this.querySelector('a');
+
+            if (anchor?.constructor !== HTMLAnchorElement) {
+                throw new Error('Could not find anchor element for redeem link');
+            }
+
+            const {
+                title,
+                'background-color': color,
+                image: { 'url-4x': icon },
+            } = redeem;
+
+            this.style.setProperty('--redeem-color', color);
+
+            anchor.setAttribute('href', `/redeems/#${createSlug(title)}`);
+            anchor.title = `${title} redeem`;
+
+            // noinspection TypeScriptUnresolvedReference
+            if (anchor.innerText?.length === 0) {
+                // noinspection TypeScriptUnresolvedReference
+                anchor.innerText = title;
+            }
+
+            if (this.classList.contains('button')) {
+                const image = document.createElement('img');
+                image.src = icon;
+                anchor.prepend(image);
+            }
+        }
+    }
+
+    if (typeof redeems === 'object' && Array.from(redeems).length > 0) {
+        customElements.define('redeem-anchor', RedeemAnchor);
+    }
+</script>
+
+<style>
+    .button {
+        --redeem-color: var(--sl-color-text-accent);
+        --redeem-color-alpha: 0.6;
+
+        &:hover {
+            --redeem-color-alpha: 1;
+        }
+
+        display: inline-block;
+        border-radius: 1.7em;
+        background: color(
+            from var(--redeem-color)
+            srgb
+            r g b / var(--redeem-color-alpha)
+        );
+
+        > a {
+            color: var(--sl-color-text);
+            padding-inline: 4em 2em;
+            line-height: 3.4em;
+            position: relative;
+
+            img {
+                display: inline-block;
+                position: absolute;
+                height: 1.8em;
+                width: 1.8em;
+                top: 50%;
+                left: 1.2em;
+                transform: translateY(-50%);
+            }
+        }
+    }
+</style>

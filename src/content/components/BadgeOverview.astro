@@ -5,7 +5,7 @@
 
     // Fetch the badges during runtime, not during build time.
     const response = await fetch('https://api.bahms.org/v1/badges/');
-    const badges = await response.json();
+    const badges = response.ok ? await response.json() : undefined;
 
     if (typeof badges !== 'object') {
         console.error('Could not load badges from API endpoint');

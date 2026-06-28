@@ -4,6 +4,8 @@ description: Introduction to the bounce house.
 ---
 import {Steps, Aside} from "@astrojs/starlight/components";
 import ShipFrame from '../../components/ShipFrame.astro';
+import RedeemLink from '../../components/RedeemLink.astro';
+import {RedeemID} from '../../redeems.ts';
 
 The bounce house is an important part of stream.
 
@@ -82,7 +84,7 @@ You too, can control your own ship easily!
 Follow these easy steps:
 
 <Steps>
-    1. Redeem the [Just Zshoom](/redeems/#just-zshoom) redeem.
+    1. Redeem the <RedeemLink id={RedeemID.Zshoom} /> redeem.
     2. Go to [game website](https://game.bahms.org/) and log in using your Twitch account.
     3. Fly around and shoot as many orbs in the Bounce House as you can.
 </Steps>

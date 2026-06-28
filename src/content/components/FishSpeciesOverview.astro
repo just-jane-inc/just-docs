@@ -33,11 +33,11 @@ const { environment } = Astro.props;
 
     // Fetch the fish species during runtime, not during build time.
     const response = await fetch('https://api.bahms.org/v1/fishing/fish');
-    const fishSpecies = (await response.json()).sort((a, b) =>
+    const fishSpecies = response.ok ? (await response.json()).sort((a, b) =>
         a.rarity === b.rarity
             ? a.name.localeCompare(b.name)
             : getRarityLevel(a.rarity) - getRarityLevel(b.rarity)
-    );
+    ) : undefined;
 
     if (typeof fishSpecies !== 'object') {
         console.error('Could not load fish species from API endpoint');

@@ -2,10 +2,12 @@
 title: Fishing game
 description: Introduction to fishing
 ---
-import {Aside, LinkButton, Steps} from "@astrojs/starlight/components";
+import {Aside, Steps} from "@astrojs/starlight/components";
 import MiddleDot from "../../components/MiddleDot.astro";
 import FishSpeciesOverview from "../../components/FishSpeciesOverview.astro";
 import FishBaitOverview from "../../components/FishBaitOverview.astro";
+import RedeemLink from "../../components/RedeemLink.astro";
+import {RedeemID} from "../../redeems.ts";
 
 a cat girl needs her fish snack - nya
 
@@ -19,7 +21,7 @@ a cat girl needs her fish snack - nya
 
 In order to play the fishing game, the player needs a rod.
 
-<LinkButton href="/redeems/#test-rod-lvl-1" icon="right-arrow" iconPlacement="start">Test Rod LVL 1</LinkButton>
+<RedeemLink button id={RedeemID.FishingRod} />
 
 ## How to play
 
@@ -28,6 +30,20 @@ In order to play the fishing game, the player needs a rod.
     2. Use the [`!fish` command](/commands/#fishing)
     3. See what fish you caught [in the stream](https://www.twitch.tv/just__jane/).
 </Steps>
+
+### Chasing your fish
+
+![Fishing game stats](../../../assets/fishing-game-stats.png "Hook: 22, Line: 22, Lure: 19, ID: 99")
+
+If you want to chase down a fish, take note of the number between square brackets.
+In this case, user `WolfWithSword` can try for this same fish, `[99]` by typing:
+
+```
+!fish 99
+```
+
+You will get a fair chance of finding that fish again, so if you don't see it,
+try and try again!
 
 ## Battle Phases
 
