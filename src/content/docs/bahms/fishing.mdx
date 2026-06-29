@@ -5,6 +5,7 @@ description: Introduction to fishing
 import {Aside, Steps} from "@astrojs/starlight/components";
 import MiddleDot from "../../components/MiddleDot.astro";
 import FishSpeciesOverview from "../../components/FishSpeciesOverview.astro";
+import FishBaitOverview from "../../components/FishBaitOverview.astro";
 import RedeemLink from "../../components/RedeemLink.astro";
 import {RedeemID} from "../../redeems.ts";
 
@@ -120,6 +121,6 @@ Rarity gives an attribute bonus to hook, lure and line.
 
 ## Bait
 
-<Aside type="note">
-    **WIP**: This will show a list of all fishing bait that can be acquired.
-</Aside>
+The following bait can be used. Certain fish like different kinds of bait. Ex. `!fish grub`
+
+<FishBaitOverview />
