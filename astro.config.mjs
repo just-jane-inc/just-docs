@@ -46,6 +46,7 @@ export default defineConfig({
                 {label: 'Redeems', slug: 'redeems'},
                 {label: 'Usercard', slug: 'usercard'},
                 {label: 'Extension', slug: 'browser-extension'},
+                {label: 'Stream Setup', slug: 'stream-setup'},
                 {
                     label: 'API documentation',
                     link: 'https://api.bahms.org',

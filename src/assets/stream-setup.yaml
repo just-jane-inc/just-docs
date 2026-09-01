@@ -1,0 +1,569 @@
+# ---------------------------------------------------------------------------
+# Stream setup
+# ---------------------------------------------------------------------------
+#
+# The scene can contain a list of nodes
+#
+#   id       Unique, used for deep links (#node-<id>)
+#   label    Text drawn on the box
+#   hint     Optional sublabel
+#   rect     [x, y, width, height] as percentages of parent box
+#   shape    box (default) | rounded | pill | circle | screen
+#   color    A CSS colour or hex code (e.g., blue, "#deadff")
+#   icon     Optional icon or emoji in the box above label
+#   into     Optional id of another scene to double-click into
+#   nodes    Optional children nodes
+#   info     Optional list of description panel pages
+#
+# A scene can also ahve `edges` to link nodes together
+#
+#   edges:
+#     - from: some-node-id    # any node id, including nested options
+#       to: another-node-id
+#       label: NDI video      # optional
+#       dashed: true          # optional
+#
+# A description panel page (info) can have:
+#
+#   title    Tab label/header
+#   body     text
+#   specs    List of { label, value } rows to render as a table
+#   link     Optional { label, href } for a linkout click
+
+- id: overview
+  title: Jane's Streaming Setup
+  caption: Click a box to read about it below. Double click a box with an arrow to drill deeper.
+  aspect: "16 / 9"
+  info:
+    - title: Multiple PCs
+      body: |
+        The stream runs using two systems to make the magic happen.
+
+        The primary system is a custom built desktop running **Linux Mint**.
+        This PC is used for games, code, OBS, and whimsy.
+        
+        A **M4 Mac Mini** is used to run VTube Studio and pipe the output via NDI to the primary system.
+        Additionally, the Mac is responsible for some Speech to Text processing.
+
+    - title: Tracking
+      body: | 
+        An iPhone handles the face tracking for VTube Studio running on the Mac Mini.
+
+        It is an iPhone 13 Pro Max, but mostly any iPhone after 10 should work for face tracking.
+
+    - title: Why split it up?
+      body: |
+        iPhone's are the closest there is to a "gold standard" for VTubing face tracking, 
+        as input data for VTube Studio.
+        
+        The Mac Mini is used for VTube Studio as VTS does not run "well" on Linux, 
+        requiring quite a few hacks we'd like to avoid. Addtionally, it off-loads the processing 
+        on a separate system which is able to handle the proper video capture needed from VTS and 
+        send it over the network via NDI Broadcasting.
+        
+        As far as the primary PC is concerned, it's just another video input source in OBS.
+
+        As for speech to text, Apple's [SpeechAnalyzer](https://developer.apple.com/documentation/speech/speechanalyzer) 
+        is a convenient and powerful tool, allowing Jill to listen and react to Jane and the stream content.
+        `"Jill, Roll Credits"`
+
+  edges:
+    - from: iphone
+      to: mac-mini
+      label: ARKit
+    - from: mac-mini
+      to: desktop
+      label: NDI video, STT
+    - from: desktop
+      to: twitch
+      label: stream
+      dashed: true
+  nodes:
+    - id: desktop
+      label: Primary Desktop
+      hint: Linux Mint
+      rect: [3, 2, 34, 32]
+      shape: rounded
+      color: "#deadff"
+      into: desktop
+      info:
+        - title: Desktop
+          body: |
+            The main machine where whimsy is developed
+          specs:
+            - label: OS
+              value: Linux Mint
+            - label: Roles
+              value: Games, development, streaming
+          link:
+            label: View More
+            href: "#node-monitor"
+
+    - id: twitch
+      label: Twitch
+      rect: [62, 5, 32, 24]
+      shape: pill
+      color: purple
+      info:
+        - title: Twitch Broadcast
+          body: |
+            OBS on the primary desktop encodes all sources and sends them to Twitch
+          link:
+            label: View the Stream
+            href: "https://twitch.tv/just__jane"
+
+    - id: mac-mini
+      label: Mac Mini
+      hint: M4
+      rect: [3, 56, 20, 30]
+      shape: rounded
+      color: cyan
+      into: mac
+      info:
+        - title: Mac Mini (M4)
+          body: |
+            A small, efficient, and always-on M4 Mac Mini. Handling both VTube Studio
+            and speech to text tasks.
+          specs:
+            - label: Machine
+              value: Mac Mini (M4)
+            - label: Runs
+              value: VTube Studio, SpeechAnalyzer
+            - label: Receives
+              value: ARKit tracking from iPhone
+            - label: Sends
+              value: NDI video to OBS, Jill's Data
+        - title: Why macOS
+          body: |
+            It's not Windows.
+
+    - id: iphone
+      label: iPhone
+      hint: 13 Pro Max
+      icon: "\U0001F4F1" # phone emoji
+      rect: [42, 56, 9, 30]
+      shape: rounded
+      color: grey
+      info:
+        - title: ARKit face tracking
+          body: |
+            The phone utilizes Apple's **ARKit** face tracking and sends it to VTube Studio directly
+          specs:
+            - label: Tracking
+              value: ARKit
+            - label: Sends to
+              value: VTube Studio on the Mac
+
+# ---------------------------------------------------------------------------
+
+- id: desktop
+  title: The Desktop
+  aspect: "16 / 9"
+  info:
+    - title: Setup
+      body: |
+        The main system is composed of a simple ultrawide monitor, a mechanical keyboard,
+        and a custom built PC tower.
+  nodes:
+    - id: monitor
+      label: Monitor
+      hint: Ultrawide, 1080p
+      rect: [4, 8, 68, 42]
+      shape: screen
+      info:
+        - title: Monitor
+          body: |
+            A random 1080p ultrawide. The pixel count is unremarkable and
+            that is fine hmmph.
+          specs:
+            - label: Panel
+              value: 1080p ultrawide
+        - title: Frequent Software
+          body: |
+            Click any of the window inside the monitor to read what it is.
+      nodes:
+        - id: win-nvim
+          label: Neovim
+          hint: IDE? What's that
+          rect: [3, 7, 20, 36]
+          color: "#24283B"
+          info:
+            - title: Neovim
+              body: |
+                Where the work happens. Setup to use Transparent background and the Tokyo Night theme.
+              specs:
+                - label: Terminal
+                  value: Kitty
+                - label: Theme
+                  value: Tokyo Night
+                - label: Editor
+                  value: NeoVim
+              link:
+                label: Neovim config
+                href: https://github.com/just-jane-inc/just-nvim-config
+        - id: win-obs
+          label: OBS
+          color: grey
+          rect: [3, 48, 20, 36]
+          info:
+            - title: OBS Studio
+              body: |
+                We love the OBS project =^-^=
+              link:
+                label: OBS Studio
+                href: https://obsproject.com/
+        - id: win-swstack
+          label: Custom Software
+          rect: [27, 18, 16, 46]
+          color: orange
+          into: stack
+          info:
+            - title: The custom software stack
+              body: |
+                All the stimmies made for stream, and our bespoke data collection.
+        - id: win-model
+          label: Model
+          hint: The Catgirl
+          rect: [83, 7, 14, 77]
+          color: "#deadff"
+          info:
+            - title: Model
+              body: |
+                Jane uses the customizable Prism model, running through VTube Studio
+                on her Mac Mini, sent over via NDI broadcast to OBS.
+              specs:
+                - label: Source
+                  value: NDI from VTube Studio on the Mac
+                - label: Model
+                  value: Prism, a customizable base model
+              link:
+                label: Prism Model
+                href: https://vgen.co/Akizone-Meez/product/prism-customizable-vtuber-model/fd3c8e71-b54b-42db-b419-920837a5dd94
+
+    - id: pc-tower
+      label: PC Hardware
+      icon: "\U0001F5B3"
+      rect: [76, 12, 20, 58]
+      shape: rounded
+      color: white
+      into: pc
+      info:
+        - title: Hardware
+          body: |
+            All the hardware that makes the beeps go boop
+
+          link:
+            label: Full parts list on PCPartPicker
+            href: https://pcpartpicker.com/list/Zxp4g3
+
+    - id: keyboard
+      label: Keychron
+      hint: Q6 Ultra
+      rect: [8, 58, 32, 12]
+      shape: rounded
+      color: navy
+      info:
+        - title: Keyboard
+          body: |
+            A Keychron mechanical keyboard. So heavy it could kill a man
+
+# ---------------------------------------------------------------------------
+
+- id: pc
+  title: Inside the PC
+  caption: The full parts can be found on PCPartPicker - link below.
+  aspect: "16 / 9"
+  info:
+    - title: The PC
+      body: |
+        This is where whimsy is coded artisanally, and we show off gamer skills at least once a decade.
+      link:
+        label: Full parts list on PCPartPicker
+        href: https://pcpartpicker.com/list/Zxp4g3
+  nodes:
+    - id: cpu
+      label: CPU
+      color: red
+      hint: AMD Ryzen 9 9900X 4.4 GHz 12-Core Processor
+      rect: [5, 12, 20, 34]
+      shape: rounded
+      info:
+        - title: Processor
+          body: |
+            Our compile times are so fast now
+
+    - id: gpu
+      label: GPU
+      hint: NVIDIA RTX 2070 SUPER 8GB
+      rect: [28, 10, 26, 34]
+      shape: rounded
+      color: green
+      info:
+        - title: GPU
+          body: |
+            Not used much, but the occaisional game or two
+
+    - id: ram
+      label: RAM
+      rect: [57, 10, 17, 34]
+      shape: rounded
+      color: cyan
+      hint: Silicon Power 32 GB (2x16GB) DDR5-6000 CL30
+      info:
+        - title: Memory
+          body: |
+            32 GB is a lot in this economy (shrugs)
+
+    - id: storage
+      label: Storage
+      rect: [77, 10, 18, 34]
+      shape: rounded
+      color: cyan
+      hint: 1x NVMe SSD
+      info:
+        - title: Drives
+          body: |
+            We don't need too much space, as we upload VODs to a remote server for backup.
+
+            Currently we have just one NVMe SSD: **Crucial E100 1TB M.2-2280 PCIe 4.0 X4**
+
+    - id: motherboard
+      label: Motherboard
+      rect: [5, 52, 20, 34]
+      shape: rounded
+      color: orange
+      hint: MSI Pro B850-S WiFi-6E ATX AM5
+      info:
+        - title: Motherboard
+          body: |
+            Gives us enough I/O and on the AM5 socket for some long term upgrade options.
+
+    - id: psu
+      label: PSU
+      rect: [28, 52, 17, 34]
+      shape: rounded
+      color: grey
+      hint: 850w 80+ Gold
+      info:
+        - title: Power supply
+          body: |
+            The PSU in the system is a Cooler Master MWE Gold 850w V3 80+ Gold, Fully Modular ATX Power Supply.
+            It gives us flexibility for upgrades in the future, with a decent amount of efficiency.
+
+    - id: case
+      label: Case & Cooling
+      rect: [48, 52, 17, 34]
+      shape: rounded
+      color: white
+      hint: HYTE X50 Air + Air Cooling
+      info:
+        - title: Case
+          body: |
+            Easy to build in, mesh for airflow, and no RGB shenanigans. This white case can 
+            fit so many stickers on it and still stay quiet under load.
+
+        - title: Cooling
+          body: |
+
+            For cooling the CPU, it's a `Thermalright Peerless Assassin 140`, matching
+            the white case theme. 
+
+            Throughout the case are x6 `Arctic P12 Pro 120mm` fans.
+            Three intakes on the bottom, two intakes from the front/side, and one exhaust in the rear.
+
+    - id: os
+      label: Linux Mint
+      hint: OS
+      rect: [68, 52, 27, 34]
+      shape: circle
+      color: lime
+      info:
+        - title: Linux Mint
+          body: |
+            The whole desktop runs on **Linux Mint**. Gaming, streaming and
+            development. This house has no Windows.
+          specs:
+            - label: Distro
+              value: Linux Mint LTS
+        - title: Gaming on Linux
+          body: |
+            Proton handles mostly anything that isn't native
+
+# ---------------------------------------------------------------------------
+
+- id: mac
+  title: Mac Mini (M4)
+  aspect: "16 / 9"
+  info:
+    - title: Why?
+      body: |
+        The Mac Mini is used to run VTube Studio, transmit its data over NDI,
+        and handle Speech to Text processing for Jill.
+  edges:
+    - from: vtube-studio
+      to: ndi-out
+      label: video output
+    - from: prism
+      to: vtube-studio
+  nodes:
+    - id: vtube-studio
+      label: VTube Studio
+      rect: [4, 8, 24, 20]
+      shape: rounded
+      color: pink
+      info:
+        - title: VTube Studio
+          body: |
+            Takes the ARKit blendshapes coming off the iPhone, drives the model
+            with them, and renders the result.
+          specs:
+            - label: Tracking in
+              value: iPhone ARKit
+            - label: Video out
+              value: NDI
+          link:
+            label: VTube Studio
+            href: https://store.steampowered.com/app/1325860/VTube_Studio/
+
+    - id: prism
+      label: Prism Model
+      hint: Customizable Live2D Model
+      rect: [4, 38, 16, 12]
+      shape: pill
+      color: white
+      info:
+        - title: The model
+          body: |
+            The avatar is the **Prism** model, a customizable base model.
+          link:
+            label: Prism Model
+            href: https://vgen.co/Akizone-Meez/product/prism-customizable-vtuber-model/fd3c8e71-b54b-42db-b419-920837a5dd94
+
+    - id: ndi-out
+      label: NDI
+      hint: To OBS
+      rect: [42, 8, 16, 24]
+      shape: rounded
+      color: silver
+      info:
+        - title: NDI over the network
+          body: |
+            VTube Studio broadcasts the rendered model over **NDI**, and OBS on
+            the Mint machine picks it up as a video source.
+          specs:
+            - label: Transport
+              value: NDI over ethernet
+            - label: Goes to
+              value: OBS on Linux Mint
+          link:
+            label: NDI
+            href: https://ndi.video/
+
+    - id: stt
+      label: Speech to Text
+      hint: SpeechAnalyzer
+      rect: [4, 56, 24, 16]
+      shape: rounded
+      color: green
+      info:
+        - title: Speech recognition
+          body: |
+            Transcription runs through Apple's **SpeechAnalyzer**, locally on the device.
+
+            This data is how Jill understands what is said on stream.
+          specs:
+            - label: Engine
+              value: Apple SpeechAnalyzer
+
+# ---------------------------------------------------------------------------
+
+- id: stack
+  title: Software stack
+  caption: Everything running on top of Linux Mint, plus external services.
+  aspect: "16 / 9"
+  info:
+    - title: The stack
+      body: |
+        Bespoke and Artisanal software has been hand-crafted for the stream.
+        
+        Check out this quick overview of what they are and how they're built.
+
+    - title: Languages
+      body: |
+        Most things you see visually on stream are written in **C++** with RayLib.
+
+        While most of the local background services are written in **Go**.
+  nodes:
+    - id: go-services
+      label: Go services
+      rect: [3, 8, 16, 24]
+      shape: rounded
+      color: blue
+      info:
+        - title: Go Services
+          body: |
+            Most of the backend services are written in Go, and you'll often hear
+            that we use Redis for everything too.
+
+            Services such as the emote and raid spy networks, the poker server, and more.
+
+    - id: raylib
+      label: raylib + C++
+      hint: Visual Stimmies
+      rect: [21, 6, 16, 24]
+      shape: rounded
+      color: orange
+      info:
+        - title: Drawing things
+          body: |
+            Almost everything visual is **C++ and raylib**.
+
+            This includes the bouncehouse, just-fishing, fireworks, and more.
+
+    - id: jill
+      label: Jill
+      hint: AI Assistant
+      rect: [72, 6, 22, 26]
+      shape: rounded
+      color: "#deadff"
+      info:
+        - title: Jill
+          body: |
+            The AI co-host. Built on **OpenAI** models with a custom memory layer.
+          link:
+            label: More about Jill
+            href: /bahms/jill
+
+    - id: tts
+      label: Text to Speech
+      hint: ElevenLabs + AWS Polly
+      rect: [57, 42, 16, 20]
+      shape: rounded
+      color: grey
+      info:
+        - title: Two voices services
+          body: |
+            **ElevenLabs** and **AWS Polly**, used side by side for different voice capabilities.
+          link:
+            label: TTS on stream
+            href: /bahms/tts
+        - title: Why both
+          body: |
+            ElevenLabs sounds better, costs more, and you can redeem to have your own custom voice added.
+            
+            Polly is cheap, fast and has a lot of serviceable voices.
+
+    - id: stt-link
+      label: Speech to Text
+      hint: on the Mac
+      rect: [78, 42, 16, 20]
+      shape: rounded
+      color: grey
+      info:
+        - title: Not on this machine
+          body: |
+            Speech recognition is run on the Mac Mini, and its output 
+            is fed to Jill so she knows what's been said on stream.
+          link:
+            label: See it on the Mac
+            href: "#node-stt"

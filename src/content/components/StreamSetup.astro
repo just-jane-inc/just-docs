@@ -1,0 +1,929 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+    root?: string;
+}
+
+const { root } = Astro.props as Props;
+
+const entries = await getCollection('streamSetup');
+
+const scenes = Object.fromEntries(
+    entries.map((entry) => [entry.id, entry.data])
+);
+
+const collectInto = (nodes) => nodes.flatMap(
+    (node) => [...(node.into ? [node.into] : []), ...collectInto(node.nodes ?? [])]
+);
+
+const childScenes = new Set(
+    entries.flatMap((entry) => collectInto(entry.data.nodes))
+);
+const rootScene = root
+    ?? entries.find((entry) => !childScenes.has(entry.id))?.id
+    ?? entries[0]?.id;
+
+const payload = JSON.stringify({ scenes, root: rootScene })
+    .replace(/</g, '\\u003c');
+
+const escape = (value) => String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+const fallbackNode = (node, depth) => {
+    const heading = Math.min(depth + 4, 6);
+    const pages = (node.info ?? []).map((page) => [
+        page.title ? `<p><strong>${escape(page.title)}</strong></p>` : '',
+        page.body ? `<p>${escape(page.body.trim())}</p>` : '',
+        (page.specs ?? []).length
+            ? `<ul>${page.specs.map((spec) =>
+                `<li>${escape(spec.label)}: ${escape(spec.value)}</li>`
+            ).join('')}</ul>`
+            : '',
+    ].join('')).join('');
+
+    return [
+        `<h${heading} id="node-${escape(node.id)}">${escape(node.label)}</h${heading}>`,
+        node.hint ? `<p><em>${escape(node.hint)}</em></p>` : '',
+        pages,
+        (node.nodes ?? []).map((child) => fallbackNode(child, depth + 1)).join(''),
+    ].join('');
+
+};
+
+const fallback = entries.map((entry) => [
+    `<h3>${escape(entry.data.title)}</h3>`,
+    entry.data.caption ? `<p>${escape(entry.data.caption)}</p>` : '',
+    entry.data.nodes.map((node) => fallbackNode(node, 1)).join(''),
+].join('')).join('');
+
+---
+
+<stream-setup>
+    <script type="application/json" data-scenes set:html={payload} is:inline></script>
+
+    <div class="setup-shell" hidden>
+        <nav class="setup-crumbs" aria-label="Setup navigation"></nav>
+        <div class="setup-stage" role="group" aria-label="Setup diagram" tabindex="-1"></div>
+        <p class="setup-caption"></p>
+        <section class="setup-panel" aria-live="polite"></section>
+    </div>
+
+    <noscript>
+        <div class="setup-fallback" set:html={fallback} />
+    </noscript>
+</stream-setup>
+
+<script>
+    const PRESET_COLORS = {
+        grey: '#8a919c',
+        blue: '#4d8dff',
+        cyan: '#35d0d8',
+        green: '#5fd35a',
+        orange: '#ff9a3c',
+        yellow: '#ffd23f',
+        purple: '#a875ff',
+    };
+
+    const HEX_COLOR = /^#?([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+    const NAMED_COLOR = /^[a-z]+$/i;
+
+    const resolveColor = (value: string | undefined, id = '') => {
+        const raw = String(value ?? '').trim();
+
+        if (!raw) {
+            return PRESET_COLORS.blue;
+        }
+
+        const preset = PRESET_COLORS[raw.toLowerCase()];
+
+        if (preset) {
+            return preset;
+        }
+
+        // basically test if it is a hex colour or another normal colour word that wasn't in presets
+        const candidate = HEX_COLOR.test(raw)
+            ? (raw.startsWith('#') ? raw : `#${raw}`)
+            : (NAMED_COLOR.test(raw) ? raw : '');
+
+        if (candidate && (typeof CSS === 'undefined' || !CSS.supports || CSS.supports('color', candidate))) {
+            return candidate;
+        }
+
+        console.warn(`stream-setup: node "${id}" has an unusable colour ${JSON.stringify(value)}, falling back to blue`);
+        return PRESET_COLORS.blue;
+    };
+
+    const SHAPES = ['box', 'rounded', 'pill', 'circle', 'screen'];
+
+    const escapeHtml = (value: string) => value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+    const inline = (value: string) => escapeHtml(value)
+        .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2">$1</a>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+    const paragraphs = (value: string) => value
+        .trim().split(/\n\s*\n/)
+        .map((block) => `<p>${inline(block.replace(/\s*\n\s*/g, ' '))}</p>`)
+        .join('');
+
+    type Box = { x: number, y: number, w: number, h: number };
+    const walk = (nodes, visit, parent: Box = { x: 0, y: 0, w: 100, h: 100 }) => {
+        for (const node of nodes ?? []) {
+            const [x, y, w, h] = node.rect;
+            const box: Box = {
+                x: parent.x + (x / 100) * parent.w,
+                y: parent.y + (y / 100) * parent.h,
+                w: (w / 100) * parent.w,
+                h: (h / 100) * parent.h,
+            };
+
+            visit(node, box);
+            walk(node.nodes, visit, box);
+        }
+    };
+
+    const clipToEdge = (box: Box, dx: number, dy: number, gap: number) => {
+        const cx = box.x + box.w / 2;
+        const cy = box.y + box.h / 2;
+        const scale = Math.min(
+            dx ? (box.w / 2) / Math.abs(dx) : Infinity,
+            dy ? (box.h / 2) / Math.abs(dy) : Infinity,
+        );
+        const length = Math.hypot(dx, dy) || 1;
+
+        return {
+            x: cx + dx * scale + (dx / length) * gap,
+            y: cy + dy * scale + (dy / length) * gap,
+        };
+    };
+
+    let instances = 0;
+
+    class StreamSetup extends HTMLElement {
+        uid = `setup-${++instances}`;
+        scenes: Record<string, any> = {};
+        root = '';
+        trail: string[] = [];
+        selected: string | null = null;
+        page = 0;
+
+        index = new Map<string, { node: any, scene: string, box: Box }>();
+        parents = new Map<string, string>();
+
+        connectedCallback() {
+            const data = this.querySelector('script[data-scenes]');
+
+            if (!data?.textContent) {
+                return;
+            }
+
+            const parsed = JSON.parse(data.textContent);
+            this.scenes = parsed.scenes;
+            this.root = parsed.root;
+
+            if (!this.scenes[this.root]) {
+                console.error('stream-setup: no scenes loaded, please verify the schema');
+                return;
+            }
+
+            for (const [id, scene] of Object.entries<any>(this.scenes)) {
+                walk(scene.nodes, (node, box) => {
+                    this.index.set(node.id, { node, scene: id, box });
+
+                    if (node.into && this.scenes[node.into]) {
+                        this.parents.set(node.into, id);
+                    }
+                });
+            }
+
+            this.trail = [this.root];
+
+            const shell = this.querySelector('.setup-shell') as HTMLElement;
+            shell.hidden = false;
+
+            this.addEventListener('click', this.onClick);
+            this.addEventListener('dblclick', this.onDoubleClick);
+            this.addEventListener('keydown', this.onKeyDown);
+            window.addEventListener('hashchange', () => this.fromHash());
+
+            if (!this.fromHash()) {
+                this.render();
+            }
+        }
+
+        fromHash() {
+            const match = /^#node-(.+)$/.exec(location.hash);
+            const entry = match && this.index.get(decodeURIComponent(match[1]));
+
+            if (!entry) {
+                return false;
+            }
+
+            const trail = [entry.scene];
+
+            while (this.parents.has(trail[0])) {
+                trail.unshift(this.parents.get(trail[0])!);
+            }
+
+            this.trail = trail;
+            this.selected = entry.node.id;
+            this.page = 0;
+
+            this.render();
+            return true;
+        }
+
+        get scene() {
+            return this.scenes[this.trail[this.trail.length - 1]];
+        }
+
+        get selection() {
+            return this.selected ? this.index.get(this.selected)?.node : undefined;
+        }
+
+        select(id: string | null) {
+            this.selected = id;
+            this.page = 0;
+
+            if (id) {
+                history.replaceState(null, '', `#node-${encodeURIComponent(id)}`);
+            }
+
+            this.applySelection();
+        }
+
+        applySelection() {
+            const stage = this.querySelector('.setup-stage') as HTMLElement;
+
+            for (const element of stage.querySelectorAll<HTMLElement>('[data-node]')) {
+                const on = element.dataset.node === this.selected;
+                element.toggleAttribute('data-selected', on);
+                element.setAttribute('aria-pressed', String(on));
+            }
+
+            this.renderPanelInto();
+        }
+
+        renderPanelInto() {
+            (this.querySelector('.setup-panel') as HTMLElement).innerHTML = this.renderPanel();
+        }
+
+        enter(id: string) {
+            const node = this.index.get(id)?.node;
+
+            if (!node?.into || !this.scenes[node.into]) {
+                return;
+            }
+
+            this.trail = [...this.trail, node.into];
+            this.selected = null;
+            this.page = 0;
+
+            this.render();
+        }
+
+        leave() {
+            if (this.trail.length < 2) {
+                return;
+            }
+
+            const left = this.trail[this.trail.length - 1];
+            this.trail = this.trail.slice(0, -1);
+            this.selected = [...this.index.values()]
+                .find((entry) => entry.node.into === left)?.node.id ?? null;
+            this.page = 0;
+            this.render();
+        }
+
+        onClick = (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+
+            const crumb = target.closest('[data-crumb]') as HTMLElement | null;
+            if (crumb) {
+                this.trail = this.trail.slice(0, Number(crumb.dataset.crumb) + 1);
+                this.selected = null;
+                this.page = 0;
+                this.render();
+                return;
+            }
+
+            const action = target.closest('[data-action]') as HTMLElement | null;
+            if (action) {
+                const { action: name, value } = action.dataset;
+
+                if (name === 'enter' && value) this.enter(value);
+                if (name === 'back') this.leave();
+                if (name === 'clear') this.select(null);
+                if (name === 'page') {
+                    this.page = Number(value);
+                    this.renderPanelInto();
+                }
+                return;
+            }
+
+            const node = target.closest('[data-node]') as HTMLElement | null;
+            if (node) {
+                this.select(node.dataset.node!);
+                return;
+            }
+
+            if (target.closest('.setup-stage')) {
+                this.select(null);
+            }
+        }
+
+        onDoubleClick = (event: MouseEvent) => {
+            const node = (event.target as HTMLElement).closest('[data-node]') as HTMLElement | null;
+            if (node?.dataset.node) {
+                this.enter(node.dataset.node);
+            }
+        }
+
+        onKeyDown = (event: KeyboardEvent) => {
+            // Escape to go back to parent / unselect, Enter to drill down
+            const target = event.target as HTMLElement;
+            const node = target.closest('[data-node]') as HTMLElement | null;
+
+            if (event.key === 'Escape') {
+                if (this.selected) {
+                    this.select(null);
+                } else {
+                    this.leave();
+                }
+                return;
+            }
+
+            if (!node || (event.key !== 'Enter' && event.key !== ' ')) {
+                return;
+            }
+
+            event.preventDefault();
+            if (this.selected === node.dataset.node) {
+                this.enter(node.dataset.node!);
+            } else {
+                this.select(node.dataset.node!);
+            }
+        }
+
+        renderNode(node): string {
+            const [x, y, width, height] = node.rect;
+            const shape = SHAPES.includes(node.shape) ? node.shape : 'box';
+            const drillable = Boolean(node.into && this.scenes[node.into]);
+            const selected = this.selected === node.id;
+
+            const style = [
+                `left:${x}%`,
+                `top:${y}%`,
+                `width:${width}%`,
+                `height:${height}%`,
+                `--line:${resolveColor(node.color, node.id)}`,
+            ].join(';');
+
+            return `
+                <div
+                    class="setup-node"
+                    role="button"
+                    tabindex="0"
+                    style="${style}"
+                    data-node="${escapeHtml(node.id)}"
+                    data-shape="${shape}"
+                    ${selected ? 'data-selected="true"' : ''}
+                    ${drillable ? 'data-drillable="true"' : ''}
+                    aria-pressed="${selected}"
+                    aria-label="${escapeHtml(node.label)}${drillable ? ', opens a detail view' : ''}"
+                >
+                    <span class="setup-node-label">
+                        ${node.icon ? `<span class="setup-node-icon">${escapeHtml(node.icon)}</span>` : ''}
+                        <span class="setup-node-name">${escapeHtml(node.label)}</span>
+                        ${node.hint ? `<span class="setup-node-hint">${escapeHtml(node.hint)}</span>` : ''}
+                    </span>
+                    ${drillable ? '<span class="setup-node-arrow" aria-hidden="true">&#8599;</span>' : ''}
+                    ${(node.nodes ?? []).map((child) => this.renderNode(child)).join('')}
+                </div>
+            `;
+        }
+
+        renderEdges(): string {
+            const edges = (this.scene.edges ?? []).flatMap((edge) => {
+                const from = this.index.get(edge.from)?.box;
+                const to = this.index.get(edge.to)?.box;
+
+                if (!from || !to) {
+                    return [];
+                }
+
+                const dx = (to.x + to.w / 2) - (from.x + from.w / 2);
+                const dy = (to.y + to.h / 2) - (from.y + from.h / 2);
+                const start = clipToEdge(from, dx, dy, 1);
+                const end = clipToEdge(to, -dx, -dy, 1.6);
+
+                return [`
+                    <line
+                        x1="${start.x}%" y1="${start.y}%"
+                        x2="${end.x}%" y2="${end.y}%"
+                        marker-end="url(#${this.uid}-arrow)"
+                        ${edge.dashed ? 'stroke-dasharray="6 5"' : ''}
+                    />
+                    ${edge.label ? `
+                        <text x="${(start.x + end.x) / 2}%" y="${(start.y + end.y) / 2}%">
+                            ${escapeHtml(edge.label)}
+                        </text>
+                    ` : ''}
+                `];
+            }).join('');
+
+            if (!edges) {
+                return '';
+            }
+
+            return `
+                <svg class="setup-edges" aria-hidden="true">
+                    <defs>
+                        <marker
+                            id="${this.uid}-arrow"
+                            viewBox="0 0 10 10" refX="8" refY="5"
+                            markerWidth="5" markerHeight="5" orient="auto"
+                        >
+                            <path d="M 0 0 L 10 5 L 0 10 z" />
+                        </marker>
+                    </defs>
+                    ${edges}
+                </svg>
+            `;
+        }
+
+        renderPage(page): string {
+            const aside = [
+                (page.specs ?? []).length
+                    ? `<dl class="setup-specs">${page.specs.map((spec) => `
+                        <div>
+                            <dt>${inline(spec.label)}</dt>
+                            <dd>${inline(spec.value)}</dd>
+                        </div>
+                    `).join('')}</dl>`
+                    : '',
+                page.link
+                    ? `<a class="setup-panel-link" href="${escapeHtml(page.link.href)}">${escapeHtml(page.link.label)} &#8594;</a>`
+                    : '',
+            ].join('');
+
+            return `
+                <div class="setup-panel-prose">
+                    ${page.body ? paragraphs(page.body) : ''}
+                </div>
+                ${aside ? `<div class="setup-panel-aside">${aside}</div>` : ''}
+            `;
+        }
+
+
+        renderPanel(): string {
+            const scene = this.scene;
+            const node = this.selection;
+            const source = node ?? scene;
+            const pages = source.info ?? [];
+            const current = Math.min(this.page, Math.max(pages.length - 1, 0));
+            const page = pages[current];
+            const drillable = node?.into && this.scenes[node.into];
+
+            const tabs = pages.length > 1
+                ? `
+                    <div class="setup-tabs" role="tablist">
+                        ${pages.map((entry, position) => `
+                            <button
+                                type="button"
+                                role="tab"
+                                class="setup-tab"
+                                data-action="page"
+                                data-value="${position}"
+                                aria-selected="${position === current}"
+                                ${position === current ? 'data-current="true"' : ''}
+                            >${escapeHtml(entry.title ?? `Page ${position + 1}`)}</button>
+                        `).join('')}
+                    </div>
+                `
+                : '';
+
+            return `
+                <header class="setup-panel-head">
+                    <div>
+                        <p class="setup-panel-eyebrow">${escapeHtml(node ? scene.title : 'Now viewing')}</p>
+                        <h2 class="setup-panel-heading">${escapeHtml(node ? node.label : scene.title)}</h2>
+                        ${node?.hint ? `<p class="setup-panel-hint">${escapeHtml(node.hint)}</p>` : ''}
+                    </div>
+                    <div class="setup-panel-actions">
+                        ${drillable ? `
+                            <button type="button" class="setup-button" data-action="enter" data-value="${escapeHtml(node.id)}">
+                                Open ${escapeHtml(node.label)} &#8599;
+                            </button>
+                        ` : ''}
+                        ${node ? `<button type="button" class="setup-button setup-button-quiet" data-action="clear">Back to ${escapeHtml(scene.title)}</button>` : ''}
+                        ${!node && this.trail.length > 1 ? '<button type="button" class="setup-button setup-button-quiet" data-action="back">&#8592; Up a level</button>' : ''}
+                    </div>
+                </header>
+
+                ${tabs}
+
+                <div class="setup-panel-grid">
+                    ${page ? this.renderPage(page) : '<p class="setup-empty">Nothing written up for this one yet.</p>'}
+                </div>
+            `;
+        }
+
+        renderCrumbs(): string {
+            return this.trail.map((id, position) => {
+                const last = position === this.trail.length - 1;
+                return `
+                    ${position > 0 ? '<span class="setup-crumb-sep" aria-hidden="true">/</span>' : ''}
+                    <button
+                        type="button"
+                        class="setup-crumb"
+                        data-crumb="${position}"
+                        ${last ? 'aria-current="true" disabled' : ''}
+                    >${escapeHtml(this.scenes[id].title)}</button>
+                `;
+            }).join('');
+        }
+
+        render() {
+            const scene = this.scene;
+            const stage = this.querySelector('.setup-stage') as HTMLElement;
+            const crumbs = this.querySelector('.setup-crumbs') as HTMLElement; // path linking
+            const caption = this.querySelector('.setup-caption') as HTMLElement;
+            const hadFocus = stage.contains(document.activeElement);
+
+            const aspect = scene.aspect ?? '16 / 9';
+            const [width, height] = aspect.split('/').map(Number);
+
+            crumbs.innerHTML = this.renderCrumbs();
+            stage.style.aspectRatio = aspect;
+            stage.style.setProperty('--stage-ratio', String((width / height) || 1.777));
+            stage.innerHTML = this.renderEdges()
+                + scene.nodes.map((node) => this.renderNode(node)).join('');
+            caption.textContent = scene.caption ?? '';
+            this.applySelection();
+
+            if (hadFocus) {
+                const target = this.selected
+                    ? stage.querySelector(`[data-node="${CSS.escape(this.selected)}"]`)
+                    : null;
+
+                (target as HTMLElement ?? stage).focus();
+            }
+        }
+    }
+
+    customElements.define('stream-setup', StreamSetup);
+</script>
+
+<style is:global>
+    body:has(stream-setup) {
+        --sl-content-width: 78rem;
+    }
+
+    body:has(stream-setup) .sl-markdown-content > :not(stream-setup) {
+        max-width: 48rem;
+    }
+
+    stream-setup {
+        display: block;
+        margin-block: 2rem 2.5rem;
+    }
+    .setup-crumbs {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem;
+        margin-block-end: 0.6rem;
+        font-size: var(--sl-text-sm);
+    }
+
+    .setup-crumb {
+        border: 0;
+        background: none;
+        padding: 0.1rem 0.3rem;
+        border-radius: 0.25rem;
+        color: var(--sl-color-accent-high);
+        cursor: pointer;
+        font: inherit;
+    }
+
+    .setup-crumb:hover {
+        background: var(--sl-color-gray-6);
+    }
+
+    .setup-crumb[aria-current] {
+        color: var(--sl-color-white);
+        font-weight: 600;
+        cursor: default;
+    }
+
+    .setup-crumb-sep {
+        color: var(--sl-color-gray-3);
+    }
+
+    .setup-stage {
+        position: relative;
+        width: 100%;
+        max-width: calc((100dvh - 13rem) * var(--stage-ratio, 1.777));
+        margin-inline: auto;
+        aspect-ratio: 16 / 9;
+        border: 1px solid var(--sl-color-gray-5);
+        border-radius: 0.6rem;
+        background:
+            radial-gradient(circle at 1px 1px, var(--sl-color-gray-5) 1px, transparent 0)
+            0 0 / 24px 24px,
+            var(--sl-color-black);
+        overflow: hidden;
+    }
+
+    .setup-caption {
+        margin-block: 0.6rem 0;
+        font-size: var(--sl-text-sm);
+        color: var(--sl-color-gray-3);
+        text-align: center;
+    }
+
+    .setup-edges {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .setup-edges line {
+        stroke: var(--sl-color-gray-3);
+        stroke-width: 2;
+    }
+
+    .setup-edges marker path {
+        fill: var(--sl-color-gray-3);
+    }
+
+    .setup-edges text {
+        fill: var(--sl-color-white);
+        stroke: var(--sl-color-black);
+        stroke-width: 5;
+        paint-order: stroke;
+        font-size: 0.72rem;
+        text-anchor: middle;
+        dominant-baseline: middle;
+    }
+
+    .setup-node {
+        --line: #4d8dff;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        padding: 0.25rem;
+
+        z-index: 2;
+
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--line) 14%, var(--sl-color-black));
+        color: var(--sl-color-white);
+
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 120ms ease, box-shadow 120ms ease;
+        container-type: size;
+    }
+
+    .setup-node[data-shape='rounded'] {
+         border-radius: 0.5rem;
+    }
+
+    .setup-node[data-shape='pill'] { 
+        border-radius: 999px;
+    }
+
+    .setup-node[data-shape='circle'] {
+         border-radius: 50%; 
+    }
+
+    .setup-node[data-shape='screen'] {
+        border-radius: 0.4rem;
+        border-width: 3px;
+        padding: 0.5rem;
+        background: color-mix(in srgb, var(--sl-color-black) 72%, var(--line));
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 40%, transparent);
+    }
+
+    .setup-node:hover {
+        background: color-mix(in srgb, var(--line) 28%, var(--sl-color-black));
+    }
+
+    .setup-node:focus-visible {
+        outline: 2px solid var(--sl-color-white);
+        outline-offset: 2px;
+    }
+
+    .setup-node[data-selected] {
+        background: color-mix(in srgb, var(--line) 36%, var(--sl-color-black));
+        box-shadow: 0 0 0 2px var(--line), 0 8px 24px -8px var(--line);
+        z-index: 3;
+    }
+
+    .setup-node:has(> .setup-node) {
+        align-items: flex-start;
+    }
+
+    .setup-node-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.15rem;
+        text-align: center;
+        line-height: 1.15;
+        pointer-events: none;
+        max-width: 100%;
+    }
+
+    .setup-node-icon {
+        font-size: clamp(1rem, 15cqh, 2rem);
+        line-height: 1;
+    }
+
+    .setup-node-name {
+        font-size: clamp(0.7rem, 11cqh, 1.1rem);
+        font-weight: 600;
+    }
+
+    .setup-node-hint {
+        font-size: clamp(0.55rem, 8cqh, 0.8rem);
+        color: var(--sl-color-gray-3);
+    }
+
+    .setup-node-arrow {
+        position: absolute;
+        top: 0.15rem;
+        right: 0.3rem;
+        font-size: 0.75rem;
+        color: var(--line);
+        pointer-events: none;
+    }
+
+    .setup-panel {
+        margin-block-start: 1rem;
+        border: 1px solid var(--sl-color-gray-5);
+        border-radius: 0.6rem;
+        background: var(--sl-color-black);
+        padding: 1.1rem 1.3rem 1.4rem;
+        min-height: 13rem;
+    }
+
+    .setup-panel-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+
+        justify-content: space-between;
+        gap: 0.8rem;
+    }
+
+    .setup-panel-eyebrow {
+        margin: 0;
+        font-size: var(--sl-text-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--sl-color-gray-3);
+    }
+
+    .setup-panel-heading {
+        margin: 0.15rem 0 0;
+        font-size: var(--sl-text-h3);
+        line-height: 1.2;
+        border: 0;
+    }
+
+    .setup-panel-hint {
+        margin: 0.2rem 0 0;
+        font-size: var(--sl-text-sm);
+        color: var(--sl-color-gray-3);
+    }
+
+    .setup-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        margin-block-start: 1rem;
+        border-bottom: 1px solid var(--sl-color-gray-6);
+    }
+
+    .setup-tab {
+        border: 0;
+        border-bottom: 2px solid transparent;
+        background: none;
+        color: var(--sl-color-gray-2);
+        font: inherit;
+        font-size: var(--sl-text-sm);
+        padding: 0.35rem 0.6rem;
+        margin-bottom: -1px;
+        cursor: pointer;
+    }
+
+    .setup-tab:hover {
+        color: var(--sl-color-white);
+    }
+
+    .setup-tab[data-current] {
+        color: var(--sl-color-white);
+        border-bottom-color: var(--sl-color-accent-high);
+    }
+
+    .setup-panel-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 18rem);
+        gap: 1.5rem;
+        align-items: start;
+        margin-block-start: 0.4rem;
+    }
+
+    @media (max-width: 50rem) {
+        .setup-panel-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 0.5rem;
+        }
+    }
+
+    .setup-panel-prose p {
+        font-size: var(--sl-text-base);
+        max-width: 46rem;
+        margin-block: 0.8rem 0;
+    }
+    .setup-specs {
+        margin: 0.9rem 0 0;
+        display: grid;
+        gap: 0.2rem;
+        font-size: var(--sl-text-sm);
+    }
+
+    .setup-specs > div {
+        display: grid;
+        grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+        gap: 0.5rem;
+        padding-block: 0.35rem;
+        border-top: 1px solid var(--sl-color-gray-6);
+    }
+
+    .setup-specs dt {
+        color: var(--sl-color-gray-3);
+    }
+
+    .setup-specs dd {
+        margin: 0;
+    }
+
+    .setup-panel-link {
+        display: inline-block;
+        margin-block-start: 1rem;
+        font-size: var(--sl-text-sm);
+    }
+
+    .setup-panel-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .setup-button {
+        font-size: var(--sl-text-xs);
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.3rem;
+        border: 1px solid var(--sl-color-accent);
+        background: color-mix(in srgb, var(--sl-color-accent) 20%, transparent);
+        color: var(--sl-color-white);
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .setup-button:hover {
+        background: color-mix(in srgb, var(--sl-color-accent) 35%, transparent);
+    }
+
+    .setup-button-quiet {
+        border-color: var(--sl-color-gray-5);
+        background: none;
+        margin-top: 0 !important;
+    }
+
+    .setup-button-quiet:hover {
+        background: var(--sl-color-gray-6);
+    }
+
+    .setup-empty {
+        color: var(--sl-color-gray-3);
+        font-size: var(--sl-text-sm);
+    }
+</style>
