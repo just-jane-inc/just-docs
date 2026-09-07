@@ -1,0 +1,142 @@
+---
+import { resolveColor } from './colors';
+import type { StreamSetupNode } from '../../schemas/stream-setup';
+
+interface Props {
+    node: StreamSetupNode;
+    sceneIds: string[];
+}
+
+const SHAPES = ['box', 'rounded', 'pill', 'circle', 'screen'];
+
+const { node, sceneIds } = Astro.props;
+const [x, y, width, height] = node.rect;
+const shape = SHAPES.includes(node.shape ?? '') ? node.shape : 'box';
+const into = node.into && sceneIds.includes(node.into) ? node.into : undefined;
+
+const style = [
+    `left:${x}%`,
+    `top:${y}%`,
+    `width:${width}%`,
+    `height:${height}%`,
+    `--line:${resolveColor(node.color)}`,
+].join(';');
+---
+
+<div
+    class="node"
+    role="button"
+    tabindex="0"
+    style={style}
+    data-node={node.id}
+    data-shape={shape}
+    data-into={into}
+    aria-pressed="false"
+    aria-label={into ? `${node.label}, opens a detail view` : node.label}
+>
+    <span class="label">
+        {node.icon && <span class="icon">{node.icon}</span>}
+        <span class="name">{node.label}</span>
+        {node.hint && <span class="hint">{node.hint}</span>}
+    </span>
+
+    {into && <span class="arrow" aria-hidden="true">&#8599;</span>}
+
+    {(node.nodes ?? []).map((child) => (
+        <Astro.self node={child} sceneIds={sceneIds} />
+    ))}
+</div>
+
+<style>
+    .node {
+        --line: #4d8dff;
+
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        padding: 0.25rem;
+        z-index: 2;
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--line) 14%, var(--sl-color-black));
+        color: var(--sl-color-white);
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 120ms ease, box-shadow 120ms ease;
+        container-type: size;
+    }
+
+    .node[data-shape='rounded'] {
+        border-radius: 0.5rem;
+    }
+
+    .node[data-shape='pill'] {
+        border-radius: 999px;
+    }
+
+    .node[data-shape='circle'] {
+        border-radius: 50%;
+    }
+
+    .node[data-shape='screen'] {
+        border-radius: 0.4rem;
+        border-width: 3px;
+        padding: 0.5rem;
+        background: color-mix(in srgb, var(--sl-color-black) 72%, var(--line));
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 40%, transparent);
+    }
+
+    .node:hover {
+        background: color-mix(in srgb, var(--line) 28%, var(--sl-color-black));
+    }
+
+    .node:focus-visible {
+        outline: 2px solid var(--sl-color-white);
+        outline-offset: 2px;
+    }
+
+    .node[data-selected] {
+        background: color-mix(in srgb, var(--line) 36%, var(--sl-color-black));
+        box-shadow: 0 0 0 2px var(--line), 0 8px 24px -8px var(--line);
+        z-index: 3;
+    }
+    .node:has(> .node) {
+        align-items: flex-start;
+    }
+
+    .label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.15rem;
+        text-align: center;
+        line-height: 1.15;
+        pointer-events: none;
+        max-width: 100%;
+    }
+
+    .icon {
+        font-size: clamp(1rem, 15cqh, 2rem);
+        line-height: 1;
+    }
+
+    .name {
+        font-size: clamp(0.7rem, 11cqh, 1.1rem);
+        font-weight: 600;
+    }
+
+    .hint {
+        font-size: clamp(0.55rem, 8cqh, 0.8rem);
+        color: var(--sl-color-gray-3);
+    }
+
+    .arrow {
+        position: absolute;
+        top: 0.15rem;
+        right: 0.3rem;
+        font-size: 0.75rem;
+        color: var(--line);
+        pointer-events: none;
+    }
+</style>

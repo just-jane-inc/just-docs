@@ -1,0 +1,38 @@
+---
+import { paragraphMarkdown } from './markdown';
+
+interface Props {
+    body: string;
+}
+
+const { body } = Astro.props;
+---
+
+<div class="page-body" set:html={paragraphMarkdown(body)} />
+
+<style>
+    .page-body :global(p) {
+        font-size: var(--sl-text-base);
+        max-width: 46rem;
+        margin-block: 0.8rem 0;
+    }
+
+    .page-body :global(p:first-child) {
+        margin-block-start: 0;
+    }
+
+    .page-body :global(a) {
+        color: var(--sl-color-text-accent);
+    }
+
+    .page-body :global(a:hover) {
+        color: var(--sl-color-white);
+    }
+
+    .page-body :global(code) {
+        background-color: var(--sl-color-bg-inline-code);
+        margin-block: -0.125rem;
+        padding: 0.125rem 0.375rem;
+        font-size: var(--sl-text-code-sm);
+    }
+</style>

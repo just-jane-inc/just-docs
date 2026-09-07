@@ -285,7 +285,7 @@
       label: CPU
       color: red
       hint: AMD Ryzen 9 9900X 4.4 GHz 12-Core Processor
-      rect: [5, 12, 20, 34]
+      rect: [5, 10, 20, 34]
       shape: rounded
       info:
         - title: Processor
@@ -496,7 +496,7 @@
   nodes:
     - id: go-services
       label: Go services
-      rect: [3, 8, 16, 24]
+      rect: [3, 6, 16, 24]
       shape: rounded
       color: blue
       info:

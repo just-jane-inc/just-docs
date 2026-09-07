@@ -1,0 +1,56 @@
+---
+import PageTitle from './PageTitle.astro';
+import PageBody from './PageBody.astro';
+import PageSpecs from './PageSpecs.astro';
+import PageLink from './PageLink.astro';
+import type { StreamSetupInfoPage } from '../../schemas/stream-setup';
+
+interface Props {
+    page: StreamSetupInfoPage;
+    index: number;
+    hidden: boolean;
+}
+
+const { page, index, hidden } = Astro.props;
+const specs = page.specs ?? [];
+const hasAside = specs.length > 0 || Boolean(page.link);
+---
+
+<div class="panel-page" data-page={index} hidden={hidden}>
+    <div class="panel-page-main">
+        {page.title && <PageTitle title={page.title} />}
+        {page.body && <PageBody body={page.body} />}
+    </div>
+
+    {hasAside && (
+        <div class="panel-page-aside">
+            {specs.length > 0 && <PageSpecs specs={specs} />}
+            {page.link && <PageLink label={page.link.label} href={page.link.href} />}
+        </div>
+    )}
+</div>
+
+<style>
+    .panel-page {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 18rem);
+        gap: 1.5rem;
+        align-items: start;
+        margin-block-start: 0.8rem;
+    }
+
+    @media (max-width: 50rem) {
+        .panel-page {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 0.5rem;
+        }
+    }
+
+    .panel-page[hidden] {
+        display: none;
+    }
+
+    .panel-page-aside {
+        padding-block-start: 0.4rem;
+    }
+</style>

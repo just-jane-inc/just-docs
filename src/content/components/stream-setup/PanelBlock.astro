@@ -1,0 +1,82 @@
+---
+import PanelHeader from './PanelHeader.astro';
+import PanelPage from './PanelPage.astro';
+import type { StreamSetupInfoPage } from '../../schemas/stream-setup';
+
+interface Props {
+    key: string;
+    hidden: boolean;
+    eyebrow: string;
+    heading: string;
+    hint?: string;
+    openId?: string;
+    openLabel?: string;
+    clearLabel?: string;
+    showBack?: boolean;
+    pages: StreamSetupInfoPage[];
+}
+
+const { key, hidden, pages, ...header } = Astro.props;
+---
+
+<div class="panel-block" data-panel={key} hidden={hidden}>
+    <PanelHeader {...header} />
+
+    {pages.length > 1 && (
+        <div class="tabs" role="tablist">
+            {pages.map((page, index) => (
+                <button
+                    type="button"
+                    role="tab"
+                    class="tab"
+                    data-tab={index}
+                    aria-selected={index === 0}
+                    data-current={index === 0 ? '' : undefined}
+                >{page.title ?? `Page ${index + 1}`}</button>
+            ))}
+        </div>
+    )}
+
+    {pages.length === 0
+        ? <p class="empty">Nothing written up for this one yet.</p>
+        : pages.map((page, index) => (
+            <PanelPage page={page} index={index} hidden={index !== 0} />
+        ))}
+</div>
+
+<style>
+    .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        margin-block-start: 1rem;
+        border-bottom: 1px solid var(--sl-color-gray-6);
+    }
+
+    .tab {
+        border: 0;
+        border-bottom: 2px solid transparent;
+        background: none;
+        color: var(--sl-color-gray-2);
+        font: inherit;
+        font-size: var(--sl-text-sm);
+        padding: 0.35rem 0.6rem;
+        margin-bottom: -1px;
+        cursor: pointer;
+    }
+
+    .tab:hover {
+        color: var(--sl-color-white);
+    }
+
+    .tab[data-current] {
+        color: var(--sl-color-white);
+        border-bottom-color: var(--sl-color-accent-high);
+    }
+
+    .empty {
+        color: var(--sl-color-gray-3);
+        font-size: var(--sl-text-sm);
+        margin-block-start: 1rem;
+    }
+</style>
