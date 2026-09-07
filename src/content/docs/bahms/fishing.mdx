@@ -33,17 +33,17 @@ In order to play the fishing game, the player needs a rod.
 
 ### Chasing your fish
 
-![Fishing game stats](../../../assets/fishing-game-stats.png "Hook: 22, Line: 22, Lure: 19, ID: 99")
+![Fishing game stats](../../../assets/fishing-game-stats.png "Lure: 15, Hook: 20, Line: 18, +5 10:00 ! - you hooked the fish")
+_Shows the fishing rod stats, time remaining to hunt this fish (10 minutes left), and an indicator showing this fish is not in their collection yet._
 
-If you want to chase down a fish, take note of the number between square brackets.
-In this case, user `WolfWithSword` can try for this same fish, `[99]` by typing:
-
-```
-!fish 99
-```
+If you want to chase down a fish, use the command `!keep-fishing`.
 
 You will get a fair chance of finding that fish again, so if you don't see it,
 try and try again!
+
+You get 10 minutes to hunt down that fish. 
+The time remaining is shown after the fishing rod stats. 
+If you want to hunt a different fish, use the `!stop-fishing` command first.
 
 ## Battle Phases
 
@@ -112,6 +112,10 @@ Rarity gives an attribute bonus to hook, lure and line.
 <MiddleDot color="#E62937"/> **Hook:** How likely you'll hook a speedy fish.  
 <MiddleDot color="#FDF900"/> **Lure:** How likely you'll lure a cunning fish.  
 <MiddleDot color="#DEADFF"/> **Line:** How easily a fish will lose stamina.  
+<MiddleDot color="#74ECEA"/> **Modifier:** Speedy, poison, lightning, wiggly... The Modifiers do all sorts of wacky things. 
+For some reason, it's not shown anywhere. 
+So, use the [API](https://api.bahms.org/swagger) or [Extension](/browser-extension) to figure out what modifer a fishing rod has.
+
 
 ## Lures
 
