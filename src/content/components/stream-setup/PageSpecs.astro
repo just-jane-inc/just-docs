@@ -1,0 +1,44 @@
+---
+import { inlineMarkdown } from './markdown';
+
+interface Props {
+    specs: Array<{ label: string, value: string }>;
+}
+
+const { specs } = Astro.props;
+---
+
+<dl class="page-specs">
+    {specs.map((spec) => (
+        <div>
+            <dt set:html={inlineMarkdown(spec.label)} />
+            <dd set:html={inlineMarkdown(spec.value)} />
+        </div>
+    ))}
+</dl>
+
+<style>
+    .page-specs {
+        margin: 0;
+        display: grid;
+        gap: 0.2rem;
+        font-size: var(--sl-text-sm);
+    }
+
+    .page-specs > div {
+        display: grid;
+        grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+        gap: 0.5rem;
+        padding-block: 0.35rem;
+        border-top: 1px solid var(--sl-color-gray-6);
+    }
+
+    .page-specs dt {
+        color: var(--sl-color-gray-3);
+        font-weight: 700;
+    }
+
+    .page-specs dd {
+        margin: 0;
+    }
+</style>

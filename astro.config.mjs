@@ -24,6 +24,7 @@ export default defineConfig({
     integrations: [
         starlight({
             title: 'just__docs',
+            customCss: ['./src/styles/custom.css'],
             social: [{icon: 'github', label: 'GitHub', href: 'https://github.com/just-jane-inc/just-docs'}],
             sidebar: [
                 {label: 'Quick Introduction', slug: 'introduction'},
@@ -46,6 +47,7 @@ export default defineConfig({
                 {label: 'Redeems', slug: 'redeems'},
                 {label: 'Usercard', slug: 'usercard'},
                 {label: 'Extension', slug: 'browser-extension'},
+                {label: 'Stream Setup', slug: 'stream-setup'},
                 {
                     label: 'API documentation',
                     link: 'https://api.bahms.org',

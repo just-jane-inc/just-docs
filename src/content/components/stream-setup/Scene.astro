@@ -1,0 +1,63 @@
+---
+import Crumbs from './Crumbs.astro';
+import Edges from './Edges.astro';
+import Node from './Node.astro';
+import { flattenNodes, parseAspect, type Box } from './geometry';
+import type { StreamSetupScene } from '../../schemas/stream-setup';
+
+interface Props {
+    id: string;
+    scene: StreamSetupScene;
+    trail: Array<{ id: string, title: string }>;
+    sceneIds: string[];
+    hidden: boolean;
+}
+
+const { id, scene, trail, sceneIds, hidden } = Astro.props;
+
+const aspect = scene.aspect ?? '16 / 9';
+const boxes: Record<string, Box> = Object.fromEntries(
+    flattenNodes(scene.nodes).map(({ node, box }) => [node.id, box])
+);
+---
+
+<section class="scene" data-scene={id} hidden={hidden}>
+    <Crumbs trail={trail} />
+
+    <div
+        class="stage"
+        role="group"
+        aria-label={`${scene.title} diagram`}
+        tabindex="-1"
+        style={`aspect-ratio:${aspect};--stage-ratio:${parseAspect(aspect)}`}
+    >
+        <Edges edges={scene.edges ?? []} boxes={boxes} markerId={`arrow-${id}`} />
+
+        {scene.nodes.map((node) => <Node node={node} sceneIds={sceneIds} />)}
+    </div>
+
+    {scene.caption && <p class="caption">{scene.caption}</p>}
+</section>
+
+<style>
+    .stage {
+        position: relative;
+        width: 100%;
+        max-width: calc((100dvh - 13rem) * var(--stage-ratio, 1.777));
+        margin-inline: auto;
+        border: 1px solid var(--sl-color-gray-5);
+        border-radius: 0.6rem;
+        background:
+            radial-gradient(circle at 1px 1px, var(--sl-color-gray-5) 1px, transparent 0)
+            0 0 / 24px 24px,
+            var(--sl-color-black);
+        overflow: hidden;
+    }
+
+    .caption {
+        margin-block: 0.6rem 0;
+        font-size: var(--sl-text-sm);
+        color: var(--sl-color-gray-3);
+        text-align: center;
+    }
+</style>

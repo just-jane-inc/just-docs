@@ -1,0 +1,126 @@
+---
+interface Props {
+    eyebrow: string;
+    heading: string;
+    hint?: string;
+    openId?: string;
+    openLabel?: string;
+    clearLabel?: string;
+    showBack?: boolean;
+}
+
+const { eyebrow, heading, hint, openId, openLabel, clearLabel, showBack } = Astro.props;
+---
+
+<header class="panel-header">
+    <div>
+        <p class="panel-eyebrow">{eyebrow}</p>
+        <h2 class="panel-heading">{heading}</h2>
+        {hint && <p class="panel-hint">{hint}</p>}
+    </div>
+
+    <div class="panel-actions">
+        {openId && (
+            <button type="button" class="button" data-action="enter" data-value={openId}>
+                <span>Open {openLabel}</span>
+                <svg class="glyph" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                        d="M7 17L17 7M9 7h8v8"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
+            </button>
+        )}
+        {clearLabel && (
+            <button type="button" class="button button-quiet" data-action="clear">
+                <span>Back to {clearLabel}</span>
+            </button>
+        )}
+        {showBack && (
+            <button type="button" class="button button-quiet" data-action="back">
+                <span>&#8592; Up a level</span>
+            </button>
+        )}
+    </div>
+</header>
+
+<style>
+    .panel-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.8rem;
+    }
+
+    .panel-eyebrow {
+        margin: 0;
+        font-size: var(--sl-text-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--sl-color-gray-3);
+    }
+
+    .panel-heading {
+        color: var(--sl-color-white);
+        font-weight: 600;
+        margin: 0.15rem 0 0;
+        font-size: var(--sl-text-h3);
+        line-height: 1.2;
+        border: 0;
+    }
+
+    .panel-hint {
+        margin: 0.2rem 0 0;
+        font-size: var(--sl-text-sm);
+        color: var(--sl-color-gray-3);
+    }
+
+    .panel-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 0.4rem;
+        margin-block-start: 0.3rem;
+    }
+
+    .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        min-height: 2rem;
+        line-height: 1.4;
+        font-size: var(--sl-text-xs);
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.3rem;
+        border: 1px solid var(--sl-color-accent);
+        background: color-mix(in srgb, var(--sl-color-accent) 20%, transparent);
+        color: var(--sl-color-white);
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .button:hover {
+        background: color-mix(in srgb, var(--sl-color-accent) 35%, transparent);
+    }
+
+    .glyph {
+        flex: none;
+        width: 0.85em;
+        height: 0.85em;
+    }
+
+    .button-quiet {
+        border-color: var(--sl-color-gray-5);
+        background: none;
+    }
+
+    .button-quiet:hover {
+        background: var(--sl-color-gray-6);
+    }
+</style>

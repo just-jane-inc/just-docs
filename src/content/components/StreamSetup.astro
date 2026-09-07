@@ -1,0 +1,318 @@
+---
+import Scene from './stream-setup/Scene.astro';
+import PanelBlock from './stream-setup/PanelBlock.astro';
+import { flattenNodes } from './stream-setup/geometry';
+import type { StreamSetupNode, StreamSetupScene } from '../schemas/stream-setup';
+
+interface Props {
+    scenes: Array<{ id: string, data: StreamSetupScene }>;
+    root?: string;
+}
+
+const { scenes, root } = Astro.props;
+
+const sceneIds = scenes.map((entry) => entry.id);
+const sceneById = new Map(scenes.map((entry) => [entry.id, entry.data]));
+
+const allNodes = scenes.flatMap((entry) =>
+    flattenNodes(entry.data.nodes).map(({ node }) => ({ node, scene: entry.id }))
+);
+
+const parentOf = new Map<string, { scene: string, node: StreamSetupNode }>();
+
+for (const { node, scene } of allNodes) {
+    if (node.into && sceneById.has(node.into)) {
+        parentOf.set(node.into, { scene, node });
+    }
+}
+
+const rootScene = root
+    ?? sceneIds.find((id) => !parentOf.has(id))
+    ?? sceneIds[0];
+
+const trailFor = (id: string) => {
+    const trail = [id];
+
+    while (parentOf.has(trail[0])) {
+        trail.unshift(parentOf.get(trail[0])!.scene);
+    }
+
+    return trail.map((sceneId) => ({ id: sceneId, title: sceneById.get(sceneId)!.title }));
+};
+---
+
+<stream-setup class="setup-root not-content" data-root={rootScene}>
+    {scenes.map((entry) => (
+        <Scene
+            id={entry.id}
+            scene={entry.data}
+            trail={trailFor(entry.id)}
+            sceneIds={sceneIds}
+            hidden={entry.id !== rootScene}
+        />
+    ))}
+
+    <section class="panel" aria-live="polite">
+        {scenes.map((entry) => (
+            <PanelBlock
+                key={`scene:${entry.id}`}
+                hidden={entry.id !== rootScene}
+                eyebrow="Now viewing"
+                heading={entry.data.title}
+                showBack={parentOf.has(entry.id)}
+                pages={entry.data.info ?? []}
+            />
+        ))}
+
+        {allNodes.map(({ node, scene }) => (
+            <PanelBlock
+                key={`node:${node.id}`}
+                hidden={true}
+                eyebrow={sceneById.get(scene)!.title}
+                heading={node.label}
+                hint={node.hint}
+                openId={node.into && sceneById.has(node.into) ? node.id : undefined}
+                openLabel={node.label}
+                clearLabel={sceneById.get(scene)!.title}
+                pages={node.info ?? []}
+            />
+        ))}
+    </section>
+</stream-setup>
+
+<script>
+    const DEFAULT_COLOR = '#4d8dff';
+
+    class StreamSetup extends HTMLElement {
+        scenes = new Map<string, HTMLElement>();
+        panels = new Map<string, HTMLElement>();
+        sceneOfNode = new Map<string, string>();
+        parentOfScene = new Map<string, string>();
+        intoOfNode = new Map<string, string>();
+
+        current = '';
+        selected: string | null = null;
+
+        connectedCallback() {
+            for (const element of this.querySelectorAll<HTMLElement>('[data-scene]')) {
+                this.scenes.set(element.dataset.scene!, element);
+
+                for (const node of element.querySelectorAll<HTMLElement>('[data-node]')) {
+                    this.sceneOfNode.set(node.dataset.node!, element.dataset.scene!);
+
+                    if (node.dataset.into) {
+                        this.intoOfNode.set(node.dataset.node!, node.dataset.into);
+                        this.parentOfScene.set(node.dataset.into, element.dataset.scene!);
+                    }
+                }
+            }
+
+            for (const element of this.querySelectorAll<HTMLElement>('[data-panel]')) {
+                this.panels.set(element.dataset.panel!, element);
+            }
+
+            this.current = this.dataset.root ?? this.scenes.keys().next().value ?? '';
+
+            this.checkColors();
+
+            this.addEventListener('click', this.onClick);
+            this.addEventListener('dblclick', this.onDoubleClick);
+            this.addEventListener('keydown', this.onKeyDown);
+            window.addEventListener('hashchange', () => this.fromHash());
+
+            if (!this.fromHash()) {
+                this.show(this.current, null);
+            }
+        }
+
+        checkColors() {
+            if (!window.CSS?.supports) {
+                return;
+            }
+
+            for (const node of this.querySelectorAll<HTMLElement>('[data-node]')) {
+                const line = node.style.getPropertyValue('--line');
+
+                if (line && !CSS.supports('color', line)) {
+
+                    console.warn(`stream-setup: node "${node.dataset.node}" has an unusable colour "${line}", falling back to blue`);
+                    node.style.setProperty('--line', DEFAULT_COLOR);
+                }
+            }
+        }
+
+        show(sceneId: string, selected: string | null) {
+            if (!this.scenes.has(sceneId)) {
+                return;
+            }
+
+            this.current = sceneId;
+            this.selected = selected;
+
+            for (const [id, element] of this.scenes) {
+                element.hidden = id !== sceneId;
+            }
+
+            const active = this.scenes.get(sceneId)!;
+
+            for (const node of active.querySelectorAll<HTMLElement>('[data-node]')) {
+                const on = node.dataset.node === selected;
+                node.toggleAttribute('data-selected', on);
+                node.setAttribute('aria-pressed', String(on));
+            }
+
+            const key = selected ? `node:${selected}` : `scene:${sceneId}`;
+
+            for (const [id, element] of this.panels) {
+                element.hidden = id !== key;
+            }
+
+            this.showPage(this.panels.get(key), 0);
+
+            if (selected) {
+                history.replaceState(null, '', `#node-${encodeURIComponent(selected)}`);
+            }
+        }
+
+        showPage(block: HTMLElement | undefined, index: number) {
+            if (!block) {
+                return;
+            }
+
+            for (const page of block.querySelectorAll<HTMLElement>('[data-page]')) {
+                page.hidden = Number(page.dataset.page) !== index;
+            }
+
+            for (const tab of block.querySelectorAll<HTMLElement>('[data-tab]')) {
+                const on = Number(tab.dataset.tab) === index;
+                tab.toggleAttribute('data-current', on);
+                tab.setAttribute('aria-selected', String(on));
+            }
+        }
+
+        select(id: string | null) {
+            this.show(this.current, id);
+        }
+
+        enter(id: string) {
+            const into = this.intoOfNode.get(id);
+
+            if (into) {
+                this.show(into, null);
+            }
+        }
+
+        leave() {
+            const parent = this.parentOfScene.get(this.current);
+
+            if (!parent) {
+                return;
+            }
+
+            const opener = [...this.intoOfNode.entries()]
+                .find(([, into]) => into === this.current)?.[0] ?? null;
+
+            this.show(parent, opener);
+        }
+
+        fromHash() {
+            const match = /^#node-(.+)$/.exec(location.hash);
+            const id = match && decodeURIComponent(match[1]);
+            const scene = id && this.sceneOfNode.get(id);
+
+            if (!scene) {
+                return false;
+            }
+
+            this.show(scene, id);
+            return true;
+        }
+
+        onClick = (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+
+            const crumb = target.closest<HTMLElement>('[data-crumb]');
+            if (crumb) {
+                this.show(crumb.dataset.crumb!, null);
+                return;
+            }
+
+            const tab = target.closest<HTMLElement>('[data-tab]');
+            if (tab) {
+                this.showPage(tab.closest<HTMLElement>('[data-panel]')!, Number(tab.dataset.tab));
+                return;
+            }
+
+            const action = target.closest<HTMLElement>('[data-action]');
+            if (action) {
+                const { action: name, value } = action.dataset;
+
+                if (name === 'enter' && value) this.enter(value);
+                if (name === 'back') this.leave();
+                if (name === 'clear') this.select(null);
+                return;
+            }
+
+            const node = target.closest<HTMLElement>('[data-node]');
+            if (node) {
+                this.select(node.dataset.node!);
+                return;
+            }
+
+            if (target.closest('[data-scene]')) {
+                this.select(null);
+            }
+        }
+
+        onDoubleClick = (event: MouseEvent) => {
+            const node = (event.target as HTMLElement).closest<HTMLElement>('[data-node]');
+
+            if (node) {
+                this.enter(node.dataset.node!);
+            }
+        }
+
+        onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                if (this.selected) {
+                    this.select(null);
+                } else {
+                    this.leave();
+                }
+                return;
+            }
+
+            const node = (event.target as HTMLElement).closest<HTMLElement>('[data-node]');
+
+            if (!node || (event.key !== 'Enter' && event.key !== ' ')) {
+                return;
+            }
+
+            event.preventDefault();
+
+            if (this.selected === node.dataset.node) {
+                this.enter(node.dataset.node!);
+            } else {
+                this.select(node.dataset.node!);
+            }
+        }
+    }
+
+    customElements.define('stream-setup', StreamSetup);
+</script>
+
+<style>
+    .setup-root.not-content {
+        display: block;
+        margin-block: 2rem 2.5rem;
+    }
+
+    .panel {
+        margin-block-start: 1rem;
+        border: 1px solid var(--sl-color-gray-5);
+        border-radius: 0.6rem;
+        background: var(--sl-color-black);
+        padding: 1.1rem 1.3rem 1.4rem;
+        min-height: 13rem;
+    }
+</style>

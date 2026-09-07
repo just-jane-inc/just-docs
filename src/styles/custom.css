@@ -1,0 +1,9 @@
+
+/** Stream-Setup Overrides **/
+body:has(stream-setup) {
+    --sl-content-width: 78rem;
+}
+body:has(stream-setup) .sl-markdown-content > :not(stream-setup) {
+    max-width: 48rem;
+}
+/****************************/
