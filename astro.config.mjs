@@ -45,6 +45,7 @@ export default defineConfig({
                 },
                 {label: 'Commands', slug: 'commands'},
                 {label: 'Redeems', slug: 'redeems'},
+                {label: 'Power Ups', slug: 'power-ups'},
                 {label: 'Usercard', slug: 'usercard'},
                 {label: 'Extension', slug: 'browser-extension'},
                 {label: 'Stream Setup', slug: 'stream-setup'},
